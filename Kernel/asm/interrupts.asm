@@ -2,6 +2,10 @@ GLOBAL _cli
 GLOBAL _sti
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
+GLOBAL _irq00Handler
+GLOBAL _irq01Handler
+
+EXTERN irqDispatcher
 
 SECTION .text
 
@@ -42,7 +46,13 @@ SECTION .text
 %endmacro
 
 %macro irqHandlerMaster 1
+
+	mov rcx, 5h
 	pushState
+  ;mov rsp, [rsp-8];Seteo el rsp a su estado original
+
+
+  mov rsi, rsp ;puntero a los registros
 
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
@@ -57,15 +67,15 @@ SECTION .text
 
 
 
-%macro exceptionHandler 1
-	pushState
-
-	mov rdi, %1 ; pasaje de parametro
-	call exceptionDispatcher
-
-	popState
-	iretq
-%endmacro
+; %macro exceptionHandler 1
+; 	pushState
+;
+; 	mov rdi, %1 ; pasaje de parametro
+; 	call exceptionDispatcher
+;
+; 	popState
+; 	iretq
+; %endmacro
 
 _cli:
 	cli
@@ -76,8 +86,15 @@ _sti:
 	sti
 	ret
 
+_irq00Handler:
+	irqHandlerMaster 0
+
+;Keyboard
+_irq01Handler:
+	irqHandlerMaster 1
+
 picMasterMask:
-	push rbp
+	 push rbp
     mov rbp, rsp
     mov ax, di
     out	21h,al
@@ -91,3 +108,7 @@ picSlaveMask:
     out	0A1h,al
     pop     rbp
     retn
+
+
+section .bss
+regBackUp resb 8

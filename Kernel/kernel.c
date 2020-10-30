@@ -102,5 +102,8 @@ int main()
 	ncNewline();
 
 	ncPrint("[Finished]");
+	ncClear();
+
+	while(1) {};
 	return 0;
 }
