@@ -28,7 +28,7 @@ static void int_21h(registerStruct * registers) {
   char buffer[1] = {0};
   uint8_t readed = readKeyboard(buffer, 1);
   if (readed) {
-    clear_display(0x000000);
+    //clear_display(0x000000);
     drawChar(0, 0, buffer[0], 2, 0xFFFFFF, 0x515151);
   }
 };
