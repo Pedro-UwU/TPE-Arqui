@@ -44,7 +44,7 @@ struct vbe_mode_info_structure {
 } __attribute__ ((packed));
 
 
-struct vbe_mode_info_structure * screenData = 0x0000000000005C00;
+struct vbe_mode_info_structure * screenData = (struct vbe_mode_info_structure *)0x0000000000005C00;
 
 
 void clear_display(uint64_t color){
