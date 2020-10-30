@@ -3,7 +3,6 @@
 
 #include <naiveConsole.h>
 #include <keyboard_driver.h>
-#include <video_driver.h>
 #include <timer_driver.h>
 #include <regi.h>
 
@@ -25,9 +24,6 @@ void irqDispatcher(uint64_t irq, uint64_t * registers) {
 
 static void int_21h(registerStruct * registers) {
   keyboardHandler(registers);
-  char buffer[1] = {0};
-  readKeyboard(buffer, 1);
-
 };
 
 

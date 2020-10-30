@@ -43,7 +43,11 @@ struct vbe_mode_info_structure {
 	uint8_t reserved1[206];
 } __attribute__ ((packed));
 
+<<<<<<< HEAD
 struct vbe_mode_info_structure * screenData = (vbe_mode_info_structure *)0x0000000000005C00;
+=======
+struct vbe_mode_info_structure * screenData = 0x0000000000005C00;
+>>>>>>> master
 
 void clear_display(uint64_t color){
 	for (int i = 0; i < screenData->width; i++){
@@ -126,7 +130,11 @@ void drawString(int x,int  y, char *string ,int fontSize,int fontColor, int back
 }
 
 void drawPixel(uint64_t x, uint64_t y, uint64_t color ) {
+<<<<<<< HEAD
     char * curpos = (char*)screenData->framebuffer;
+=======
+    char * curpos = screenData->framebuffer;
+>>>>>>> master
     curpos+=(x+screenData->width*y)*3;
 
     uint8_t b = color & 0x0000FF;

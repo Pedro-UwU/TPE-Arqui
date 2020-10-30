@@ -8,9 +8,11 @@
 #define BLOCK_M 58
 
 #define KEY_RELEASED 128
+#define KEYS 59
 
 #include <regi.h>
 
 void keyboardHandler(registerStruct *);
+uint8_t readKeyboard(char * buff, uint8_t size);
 
 #endif
