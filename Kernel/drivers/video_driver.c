@@ -1,8 +1,8 @@
 #ifndef VIDEO_DRIVER
 #define VIDEO_DRIVER
 #include <stdint.h>
-#include <include/video_driver.h>
-#include "resources/font.h"
+#include <video_driver.h>
+#include <font.h>
 static int CHAR_SPACE = 2;
 
 struct vbe_mode_info_structure {
@@ -71,7 +71,7 @@ void drawLine(int xi,int yi,int xf,int yf,uint64_t color){
     int m = (yf-yi)/(xf-xi);
     int b = yi - m*xi;
     for(int i = xi ; i < xf ; i++){
-          drawPixel(i,m*i+b,color);  
+          drawPixel(i,m*i+b,color);
     }
 }
 
@@ -111,7 +111,7 @@ void drawString(int x,int  y, char *string ,int fontSize,int fontColor, int back
 	if (x>screenData->width || y > screenData->height || x < 0 || y < 0){
 		return ;
 	}
-	
+
 	for (int i = 0, move=0; string[i]; i++,move +=((CHAR_SPACE+CHAR_WIDTH))*fontSize) {
 		if (move>screenData->width-CHAR_WIDTH*fontSize)
 		{
@@ -138,6 +138,6 @@ void drawPixel(uint64_t x, uint64_t y, uint64_t color ) {
     *curpos = g;
     curpos++;
     *curpos = r;
-    curpos++; 
+    curpos++;
 }
 #endif
