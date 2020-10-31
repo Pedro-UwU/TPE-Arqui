@@ -8,9 +8,12 @@ testeo:
   push rbp
   mov rbp, rsp
 
-  xor rax, rax
-  mov rsi, string
-  mov rdx, 4
+  mov rax, 3
+  mov rbx, 4
+  mov r9, 1
+  mov r8, 1
+  mov r15, 3
+  mov rsi, 0ffffffh
 
   int 80h
 
