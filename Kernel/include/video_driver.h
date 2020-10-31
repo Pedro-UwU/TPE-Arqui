@@ -9,5 +9,5 @@ void drawMatrix(uint64_t x, uint64_t y, uint64_t *mat, uint64_t height, uint64_t
 void drawChar(uint64_t x, uint64_t y, uint8_t character, uint64_t fontSize, uint64_t fontColor, uint64_t backgroundColor);
 void drawString(int x,int  y, char *string ,int fontSize,int fontColor, int backgroundColor);
 void drawPixel(uint64_t x, uint64_t y, uint64_t color );
-
+uint64_t getCharWidth();
 #endif
