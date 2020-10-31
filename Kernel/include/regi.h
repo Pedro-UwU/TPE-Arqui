@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define TOTAL_REGISTERS 15
+//#define TOTAL_REGISTERS 15
 
 typedef struct registers {
 	uint64_t r15;

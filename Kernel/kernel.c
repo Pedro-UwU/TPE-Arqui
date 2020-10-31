@@ -4,6 +4,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idtLoader.h>
+#include <test.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -104,6 +105,8 @@ int main()
 	ncPrint("[Finished]");
 	ncClear();
 
-	while(1) {};
+	while(1) {
+		
+	};
 	return 0;
 }

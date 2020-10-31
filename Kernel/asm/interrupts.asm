@@ -4,6 +4,7 @@ GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
+GLOBAL _irq80Handler
 
 EXTERN irqDispatcher
 
@@ -103,6 +104,9 @@ _irq00Handler:
 ;Keyboard
 _irq01Handler:
 	irqHandlerMaster 1
+
+_irq80Handler:
+	irqHandlerMaster 80
 
 picMasterMask:
 	 push rbp
