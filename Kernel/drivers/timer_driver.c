@@ -10,4 +10,8 @@ void timeHandler() {
   ticks++;
 }
 
+uint64_t getTicks() {
+  return ticks;
+}
+
 #endif

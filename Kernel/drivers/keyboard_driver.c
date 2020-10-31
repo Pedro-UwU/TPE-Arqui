@@ -5,7 +5,7 @@
 #include <naiveConsole.h>
 #include <regi.h>
 #include <stdint.h>
-#define BUFFER_SIZE 16
+#define BUFFER_SIZE 32
 
 
 

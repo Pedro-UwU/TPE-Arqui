@@ -10,5 +10,6 @@ void picMasterMask(uint8_t mask);
 
 void _irq00Handler(void);
 void _irq01Handler(void);
+void _irq80Handler(void);
 
 #endif
