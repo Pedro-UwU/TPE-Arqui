@@ -51,18 +51,27 @@ void clear_display(uint64_t color){
 	uint8_t b = color & 0x0000FF;
 	uint8_t g = (color >> 8 )& 0x0000FF;
 	uint8_t r = ( color >> 16) & 0x0000FF;
-	for (int i = 0; i < screenData->width; i++){
-		for (int j = 0; j < screenData->height; j++){
-			uint8_t * curpos = screenData->framebuffer;
-	    curpos+=(i+screenData->width*j)*3;
+	// for (int i = 0; i < screenData->width; i++){
+	// 	for (int j = 0; j < screenData->height; j++){
+	// 		uint8_t * curpos = screenData->framebuffer;
+	//     curpos+=(i+screenData->width*j)*3;
+	//
+	//     *curpos = b;
+	//     curpos++;
+	//     *curpos = g;
+	//     curpos++;
+	//     *curpos = r;
+	//     curpos++;
+	// 	}
+	// }
+	uint64_t totalPixels = screenData->width*screenData->height;
+	uint8_t * curpos = screenData->framebuffer;
+	for (int i = 0; i < totalPixels; i++) {
 
-	    *curpos = b;
-	    curpos++;
-	    *curpos = g;
-	    curpos++;
-	    *curpos = r;
-	    curpos++;
-		}
+		*curpos = b;
+		*(curpos+1) = g;
+		*(curpos+2) = r;
+		curpos+=3;
 	}
 }
 

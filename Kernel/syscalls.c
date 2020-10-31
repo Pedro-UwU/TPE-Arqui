@@ -4,6 +4,7 @@
 #include <regi.h>
 #include <keyboard_driver.h>
 #include <video_driver.h>
+#include <timer_driver.h>
 
 void writeStr(registerStruct * registers);
 
@@ -40,7 +41,7 @@ void syscallHandler(registerStruct * registers) {
 }
 
 void writeStr(registerStruct * registers) {
-  clear_display(0);
+  clear_display(0xFF0000 + (getTicks() %123));
   uint64_t xOffset = 0;
   char * buffer = (char *)registers->rsi;
   for (uint64_t i = 0; i < registers->rdx && buffer[i] != 0; i++) {
