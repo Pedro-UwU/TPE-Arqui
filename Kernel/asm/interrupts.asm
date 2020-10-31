@@ -48,6 +48,11 @@ SECTION .text
 %macro irqHandlerMaster 1
 
 	mov rcx, 5h
+
+	push $
+	push rsp
+	mov [rsp+8], rsp
+
 	pushState
   ;mov rsp, [rsp-8];Seteo el rsp a su estado original
 
@@ -62,6 +67,12 @@ SECTION .text
 	out 20h, al
 
 	popState
+
+	mov [regBackUp], rax
+	pop rax
+	pop rax
+	mov rax, [regBackUp]
+
 	iretq
 %endmacro
 
