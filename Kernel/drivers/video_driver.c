@@ -48,14 +48,28 @@ struct vbe_mode_info_structure * screenData = (struct vbe_mode_info_structure *)
 
 
 void clear_display(uint64_t color){
+	uint8_t b = color & 0x0000FF;
+	uint8_t g = (color >> 8 )& 0x0000FF;
+	uint8_t r = ( color >> 16) & 0x0000FF;
 	for (int i = 0; i < screenData->width; i++){
 		for (int j = 0; j < screenData->height; j++){
-			drawPixel(i,j,color);
+			uint8_t * curpos = screenData->framebuffer;
+	    curpos+=(i+screenData->width*j)*3;
+
+	    *curpos = b;
+	    curpos++;
+	    *curpos = g;
+	    curpos++;
+	    *curpos = r;
+	    curpos++;
 		}
 	}
 }
 
 void drawSquare(uint64_t x, uint64_t y, uint64_t size, uint64_t color){
+	if (x>screenData->width || y > screenData->height || x < 0 || y < 0){
+		return ;
+	}
 	for (int i = 0; i < size; i++){
 		for (int j = 0; j < size; j++){
 			drawPixel(x+i,j+y,color);
@@ -88,6 +102,7 @@ void drawMatrix(uint64_t x, uint64_t y, uint64_t *mat, uint64_t height, uint64_t
 void drawChar(uint64_t x, uint64_t y, uint8_t character, uint64_t fontSize, uint64_t fontColor, uint64_t backgroundColor){
 	int aux_x = x;
 	int aux_y = y;
+
 
 	char bitIsPresent;
 
@@ -128,6 +143,9 @@ void drawString(int x,int  y, char *string ,int fontSize,int fontColor, int back
 }
 
 void drawPixel(uint64_t x, uint64_t y, uint64_t color ) {
+		if (x>screenData->width || y > screenData->height || x < 0 || y < 0){
+			return ;
+		}
     char * curpos = screenData->framebuffer;
     curpos+=(x+screenData->width*y)*3;
 
@@ -141,5 +159,9 @@ void drawPixel(uint64_t x, uint64_t y, uint64_t color ) {
     curpos++;
     *curpos = r;
     curpos++;
+}
+
+uint64_t getCharWidth() {
+	return CHAR_WIDTH;
 }
 #endif
