@@ -98,7 +98,6 @@ void getDateInfo(uint8_t mode, uint8_t * target) {
 }
 
 void writeStr(registerStruct * registers) {
-  clearDisplay(0xFF0000 + (getTicks() %123));
   uint64_t xOffset = 0;
   char * buffer = (char *)registers->rsi;
   for (uint64_t i = 0; i < registers->rdx && buffer[i] != 0; i++) {

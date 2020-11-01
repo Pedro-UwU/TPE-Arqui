@@ -196,6 +196,13 @@ uint64_t getCharHeight() {
   return CHAR_HEIGHT;
 }
 
+uint64_t getScreenWidthRes() {
+	return screenData->width;
+}
+
+uint64_t getScreenHeightRes() {
+	return screenData->height;
+}
 
 
 #endif

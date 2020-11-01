@@ -54,5 +54,23 @@ void intToStr(uint64_t num, uint64_t strDim, char str[strDim]) {
   str[index] = 0;
 }
 
+void printRes() {
+  char buffer[8] = {0};
+  uint64_t xOffset = 0;
+  intToStr(getScreenWidthRes(), 8, buffer);
+  for (uint64_t i = 0; i < 8 && buffer[i] != 0; i++) {
+    drawChar(xOffset, 0, buffer[i], 1, 0xFFFFFF, 0, 1);
+    xOffset += getCharWidth();
+  }
+
+  xOffset = 0;
+  intToStr(getScreenHeightRes(), 8, buffer);
+  for (uint64_t i = 0; i < 8 && buffer[i] != 0; i++) {
+    drawChar(xOffset, 16, buffer[i], 1, 0xFFFFFF, 0, 1);
+    xOffset += getCharWidth();
+  }
+
+}
+
 
 #endif

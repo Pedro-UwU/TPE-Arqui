@@ -14,4 +14,6 @@ void drawPixel(uint64_t x, uint64_t y, color col);
 void drawRectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, color col);
 uint64_t getCharWidth();
 uint64_t getCharHeight();
+uint64_t getScreenHeightRes();
+uint64_t getScreenWidthRes();
 #endif
