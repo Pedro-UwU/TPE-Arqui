@@ -6,6 +6,7 @@
 #define SHIFT_R 54
 #define ALT_L 56
 #define BLOCK_M 58
+#define F1 59
 
 #define KEY_RELEASED 128
 #define KEYS 59
