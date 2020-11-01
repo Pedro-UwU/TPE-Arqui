@@ -27,12 +27,6 @@ void irqDispatcher(uint64_t irq, uint64_t * registers) {
 
 static void int_20h() {
   timeHandler();
-  uint64_t ticks = getTicks();
-  uint8_t mod = ticks % 60;
-  if (mod == 0) {
-    clearDisplay(0x0);
-    printReg();
-  }
 }
 
 static void int_21h(registerStruct * registers) {
