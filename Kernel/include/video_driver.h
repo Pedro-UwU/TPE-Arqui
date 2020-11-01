@@ -10,4 +10,6 @@ void drawChar(uint64_t x, uint64_t y, uint8_t character, uint64_t fontSize, uint
 void drawString(int x,int  y, char *string ,int fontSize,int fontColor, int backgroundColor);
 void drawPixel(uint64_t x, uint64_t y, uint64_t color );
 uint64_t getCharWidth();
+uint64_t getCharHeight();
+
 #endif

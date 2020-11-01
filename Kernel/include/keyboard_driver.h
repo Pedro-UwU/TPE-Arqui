@@ -6,13 +6,17 @@
 #define SHIFT_R 54
 #define ALT_L 56
 #define BLOCK_M 58
+#define F1 59
 
 #define KEY_RELEASED 128
 #define KEYS 59
 
 #include <regi.h>
+#include <stdint.h>
 
 void keyboardHandler(registerStruct *);
 uint8_t readKeyboard(char * buff, uint8_t size);
+registerStruct * getRegisters();
+uint8_t getKeyCode();
 
 #endif

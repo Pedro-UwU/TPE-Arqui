@@ -65,7 +65,7 @@ void clear_display(uint64_t color){
 	// 	}
 	// }
 	uint64_t totalPixels = screenData->width*screenData->height;
-	uint8_t * curpos = screenData->framebuffer;
+	uint8_t * curpos = (uint8_t *)screenData->framebuffer;
 	for (int i = 0; i < totalPixels; i++) {
 
 		*curpos = b;
@@ -155,7 +155,7 @@ void drawPixel(uint64_t x, uint64_t y, uint64_t color ) {
 		if (x>screenData->width || y > screenData->height || x < 0 || y < 0){
 			return ;
 		}
-    char * curpos = screenData->framebuffer;
+    uint8_t * curpos = (uint8_t*) screenData->framebuffer;
     curpos+=(x+screenData->width*y)*3;
 
     uint8_t b = color & 0x0000FF;
@@ -173,4 +173,10 @@ void drawPixel(uint64_t x, uint64_t y, uint64_t color ) {
 uint64_t getCharWidth() {
 	return CHAR_WIDTH;
 }
+
+uint64_t getCharHeight() {
+	return CHAR_HEIGHT;
+}
+
+
 #endif

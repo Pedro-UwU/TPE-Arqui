@@ -41,7 +41,7 @@ void syscallHandler(registerStruct * registers) {
 }
 
 void writeStr(registerStruct * registers) {
-  clear_display(0xFF0000 + (getTicks() %123));
+  clear_display(0xFF0000);
   uint64_t xOffset = 0;
   char * buffer = (char *)registers->rsi;
   for (uint64_t i = 0; i < registers->rdx && buffer[i] != 0; i++) {
