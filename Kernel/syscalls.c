@@ -6,6 +6,7 @@
 #include <video_driver.h>
 #include <timer_driver.h>
 #include <date_driver.h>
+#include <IO_driver.h>
 
 void writeStr(registerStruct * registers);
 void getDateInfo(uint8_t mode, uint8_t * target);
@@ -32,26 +33,26 @@ void syscallHandler(registerStruct * registers) {
     writeStr(registers);
     break;
 
-    case 2:
-    //rsi color
-      clear_display((uint64_t) registers->rsi);
-      break;
-    case 3:
-    // r9 xi , r8 yi, r10 xf, r11 yf, rsi color
-      drawLine((int) registers->r9,(int) registers->r8,(int) registers->r10,(int) registers->r11,(uint64_t) registers->rsi);
-      break;
-    case 4:
-    // r9 xi, r8 yi, rsi color
-      drawPixel((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->rsi);
-      break;
-    case 5:
-    // r9 xi, r8 yi , r15 size, rsi color
-      drawSquare((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->r15,(uint64_t) registers->rsi);
-      break;
-    case 6:
-    // r9 xi, r8 yi, rdx puntero a matriz, r10 height, r11 width , rsi color
-      drawMatrix((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->rdx,(uint64_t) registers->r10,(uint64_t) registers->r11,(uint64_t) registers->rsi);
-      break;
+    // case 2:
+    // //rsi color
+    //   clear_display((uint64_t) registers->rsi);
+    //   break;
+    // case 3:
+    // // r9 xi , r8 yi, r10 xf, r11 yf, rsi color
+    //   drawLine((int) registers->r9,(int) registers->r8,(int) registers->r10,(int) registers->r11,(uint64_t) registers->rsi);
+    //   break;
+    // case 4:
+    // // r9 xi, r8 yi, rsi color
+    //   drawPixel((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->rsi);
+    //   break;
+    // case 5:
+    // // r9 xi, r8 yi , r15 size, rsi color
+    //   drawSquare((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->r15,(uint64_t) registers->rsi);
+    //   break;
+    // case 6:
+    // // r9 xi, r8 yi, rdx puntero a matriz, r10 height, r11 width , rsi color
+    //   drawMatrix((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->rdx,(uint64_t) registers->r10,(uint64_t) registers->r11,(uint64_t) registers->rsi);
+    //   break;
 
 
     //
@@ -66,6 +67,17 @@ void syscallHandler(registerStruct * registers) {
     //rsi -> puntero a entero
     getDateInfo((uint8_t) registers->rdi, (uint8_t *) registers->rsi);
     break;
+
+    case 9: //Obtener los registros
+    //rdi -> puntero a vector de uint64_t para guardar los valores
+    * ((uint64_t *)registers->rdi) = getRegisters();
+    break;
+
+    case 10:
+    //rdi -> direccion de la que se desea leer
+    //rsi -> direccion del buffer para guardar
+    //rdx -> total de bytes que se quieren leer
+    get32bytesFromAddress(registers->rdi, (uint64_t*)registers->rsi, (uint8_t)registers->rdx);
   }
 }
 

@@ -11,6 +11,10 @@ void printReg();
 void intToStr(uint64_t num, uint64_t strDim, char str[strDim]);
 void printStr(uint64_t x, uint64_t y, char * str, uint64_t size);
 
+void printDate() {
+
+}
+
 void printReg() {
   registerStruct * registers = getRegisters();
   uint64_t * pos = (uint64_t *) registers;

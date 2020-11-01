@@ -4,13 +4,10 @@
 #include <keyboard_driver.h>
 #include <naiveConsole.h>
 #include <regi.h>
+#include <IO_driver.h>
 #include <stdint.h>
 #define BUFFER_SIZE 32
 
-
-static void saveRegisters(registerStruct * registers);
-
-static registerStruct registerSnapshot;
 static uint8_t shiftL = 0, shiftR = 0;
 static char pressCodes[][2] = {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'}, {'3', '#'}, {'4', '$'}, {'5', '%'}, {'6', '^'}, {'7', '&'},
 {'8', '*'}, {'9', '('}, {'0', ')'}, {'-', '_'}, {'=', '+'}, {'\b', '\b'}, {'\t', '\t'}, {'q', 'Q'}, {'w', 'W'}, {'e', 'E'}, {'r', 'R'},
@@ -54,29 +51,5 @@ uint8_t readKeyboard(char * buff, uint8_t size) {
     startIndex++;
   }
   return i;
-}
-
-static void saveRegisters(registerStruct * registers) {
-  registerSnapshot.r15 = registers->r15;
-  registerSnapshot.r14 = registers->r14;
-  registerSnapshot.r13 = registers->r13;
-  registerSnapshot.r12 = registers->r12;
-  registerSnapshot.r11 = registers->r11;
-  registerSnapshot.r10 = registers->r10;
-  registerSnapshot.r9 = registers->r9;
-  registerSnapshot.r8 = registers->r8;
-  registerSnapshot.rsi = registers->rsi;
-  registerSnapshot.rdi = registers->rdi;
-  registerSnapshot.rbp = registers->rbp;
-  registerSnapshot.rdx = registers->rdx;
-  registerSnapshot.rcx = registers->rcx;
-  registerSnapshot.rbx = registers->rbx;
-  registerSnapshot.rax = registers->rax;
-  registerSnapshot.rsp = registers->rsp;
-  registerSnapshot.rip = registers->rip;
-}
-
-registerStruct * getRegisters() {
-  return &registerSnapshot;
 }
 #endif
