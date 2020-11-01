@@ -30,7 +30,7 @@ static void int_20h() {
   uint64_t ticks = getTicks();
   uint8_t mod = ticks % 60;
   if (mod == 0) {
-    clear_display(0x0);
+    clearDisplay(0x0);
     printReg();
   }
 }

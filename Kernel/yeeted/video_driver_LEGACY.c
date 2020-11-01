@@ -47,7 +47,7 @@
 // struct vbe_mode_info_structure * screenData = (struct vbe_mode_info_structure *)0x0000000000005C00;
 //
 //
-// void clear_display(uint64_t color){
+// void clearDisplay(uint64_t color){
 // 	uint8_t b = color & 0x0000FF;
 // 	uint8_t g = (color >> 8 )& 0x0000FF;
 // 	uint8_t r = ( color >> 16) & 0x0000FF;

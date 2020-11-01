@@ -4,7 +4,7 @@
 
 typedef uint64_t color;
 
-void clear_display(color);
+void clearDisplay(color);
 //void drawSquare(uint64_t x, uint64_t y, uint64_t size, uint64_t color);
 void drawLine(uint64_t xStart, uint64_t yStart, uint64_t xEnd, uint64_t yEnd, color col);
 void drawMatrix(uint64_t x, uint64_t y, color *mat, uint64_t height, uint64_t width,uint64_t size);

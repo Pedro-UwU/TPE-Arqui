@@ -48,7 +48,7 @@ struct vbe_mode_info_structure {
 
 struct vbe_mode_info_structure * screenData = (struct vbe_mode_info_structure *)0x0000000000005C00;
 
-void clear_display(color col) {
+void clearDisplay(color col) {
   uint64_t totalPixels = screenData->width*screenData->height;
   uint8_t * curpos = (uint8_t *)screenData->framebuffer;
   uint8_t b = col & 0x0000FF;

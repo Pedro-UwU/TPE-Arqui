@@ -34,30 +34,29 @@ void syscallHandler(registerStruct * registers) {
 
     case 2:
     //rsi color
-      clear_display((uint64_t) registers->rsi);
+      clearDisplay((uint64_t) registers->rsi);
       break;
     case 3:
-    // r9 xi , r8 yi, r10 xf, r11 yf, rsi color
-      drawLine((int) registers->r9,(int) registers->r8,(int) registers->r10,(int) registers->r11,(uint64_t) registers->rsi);
+    // r9 xstart , r8 ystart, r10 xend, r11 yend, rsi color
+      drawLine((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->r10,(uint64_t) registers->r11,(uint64_t) registers->rsi);
       break;
     case 4:
     // r9 xi, r8 yi, rsi color
       drawPixel((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->rsi);
       break;
     case 5:
-    // r9 xi, r8 yi , r15 size, rsi color
-      drawSquare((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->r15,(uint64_t) registers->rsi);
+    // r9 xi, r8 yi , r10 height, r11 width , rsi color
+      drawRectangle((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->r10,(uint64_t) registers->r11,(uint64_t) registers->rsi);
       break;
     case 6:
-    // r9 xi, r8 yi, rdx puntero a matriz, r10 height, r11 width , rsi color
-      drawMatrix((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->rdx,(uint64_t) registers->r10,(uint64_t) registers->r11,(uint64_t) registers->rsi);
+    // r9 xi, r8 yi, rsi puntero a matriz, r10 height, r11 width , r15 size
+      drawMatrix((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t *) registers->rsi,(uint64_t) registers->r10,(uint64_t) registers->r11,(uint64_t) registers->r15);
       break;
 
 
     //
     //case 1: writeSTR
     //case 2: getDate
-    //case 3: DRAW
     //case 4: getMillis (?)
 
 
@@ -87,7 +86,7 @@ void getDateInfo(uint8_t mode, uint8_t * target) {
 }
 
 void writeStr(registerStruct * registers) {
-  clear_display(0xFF0000 + (getTicks() %123));
+  clearDisplay(0xFF0000 + (getTicks() %123));
   uint64_t xOffset = 0;
   char * buffer = (char *)registers->rsi;
   for (uint64_t i = 0; i < registers->rdx && buffer[i] != 0; i++) {
