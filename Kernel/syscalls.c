@@ -6,6 +6,7 @@
 #include <video_driver.h>
 #include <timer_driver.h>
 #include <date_driver.h>
+#include <IO_driver.h>
 
 void writeStr(registerStruct * registers);
 void getDateInfo(uint8_t mode, uint8_t * target);
@@ -65,6 +66,17 @@ void syscallHandler(registerStruct * registers) {
     //rsi -> puntero a entero
     getDateInfo((uint8_t) registers->rdi, (uint8_t *) registers->rsi);
     break;
+
+    case 9: //Obtener los registros
+    //rdi -> puntero a vector de uint64_t para guardar los valores
+    * ((uint64_t *)registers->rdi) = getRegisters();
+    break;
+
+    case 10:
+    //rdi -> direccion de la que se desea leer
+    //rsi -> direccion del buffer para guardar
+    //rdx -> total de bytes que se quieren leer
+    get32bytesFromAddress(registers->rdi, (uint64_t*)registers->rsi, (uint8_t)registers->rdx);
   }
 }
 
