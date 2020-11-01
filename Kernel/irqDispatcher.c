@@ -35,7 +35,7 @@ static void int_20h() {
 
 static void int_21h(registerStruct * registers) {
   keyboardHandler(registers);
-  clear_display(0);
+  clear_display(0xFF0000);
 };
 
 static void int_80h(registerStruct * registers) {

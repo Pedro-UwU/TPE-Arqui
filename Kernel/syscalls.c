@@ -8,7 +8,7 @@
 #include <date_driver.h>
 
 void writeStr(registerStruct * registers);
-void getTimeInfo(uint8_t mode, uint8_t * target);
+void getDateInfo(uint8_t mode, uint8_t * target);
 
 void syscallHandler(registerStruct * registers) {
   uint64_t option = registers->rax;
@@ -45,11 +45,11 @@ void syscallHandler(registerStruct * registers) {
     //rdi -> mode
     //rsi -> puntero a entero
     getDateInfo((uint8_t) registers->rdi, (uint8_t *) registers->rsi);
-    break
+    break;
   }
 }
 
-void getTimeInfo(uint8_t mode, uint8_t * target) {
+void getDateInfo(uint8_t mode, uint8_t * target) {
   switch(mode) {
     case 0: *target = getSeconds();
     break;
@@ -62,7 +62,7 @@ void getTimeInfo(uint8_t mode, uint8_t * target) {
     case 4: *target = getMonth();
     break;
     case 5: *target = getYear();
-    break
+    break;
   }
 }
 
@@ -72,7 +72,7 @@ void writeStr(registerStruct * registers) {
   char * buffer = (char *)registers->rsi;
   for (uint64_t i = 0; i < registers->rdx && buffer[i] != 0; i++) {
     char ch = ((char *)registers->rsi)[i];
-    drawChar(registers->rbx + xOffset, registers->rcx, ch, registers->r10, registers->r8, registers->r9);
+    drawChar(registers->rbx + xOffset, registers->rcx, ch, registers->r10, registers->r8, registers->r9, 1);
     xOffset += getCharWidth() * registers->r10;
   }
 }

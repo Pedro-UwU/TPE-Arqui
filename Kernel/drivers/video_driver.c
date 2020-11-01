@@ -1,9 +1,11 @@
 #ifndef VIDEO_DRIVER
 #define VIDEO_DRIVER
-#include <stdint.h>
 #include <video_driver.h>
+#include <stdint.h>
 #include <font.h>
-static int CHAR_SPACE = 2;
+
+static uint8_t legalCoordinates(uint64_t x, uint64_t y);
+static void drawVerticalLine(uint64_t x, uint64_t yStart, uint64_t yEnd, color col);
 
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -46,121 +48,137 @@ struct vbe_mode_info_structure {
 
 struct vbe_mode_info_structure * screenData = (struct vbe_mode_info_structure *)0x0000000000005C00;
 
-
-void clear_display(uint64_t color){
-	uint8_t b = color & 0x0000FF;
-	uint8_t g = (color >> 8 )& 0x0000FF;
-	uint8_t r = ( color >> 16) & 0x0000FF;
-	// for (int i = 0; i < screenData->width; i++){
-	// 	for (int j = 0; j < screenData->height; j++){
-	// 		uint8_t * curpos = screenData->framebuffer;
-	//     curpos+=(i+screenData->width*j)*3;
-	//
-	//     *curpos = b;
-	//     curpos++;
-	//     *curpos = g;
-	//     curpos++;
-	//     *curpos = r;
-	//     curpos++;
-	// 	}
-	// }
-	uint64_t totalPixels = screenData->width*screenData->height;
-	uint8_t * curpos = screenData->framebuffer;
-	for (int i = 0; i < totalPixels; i++) {
-
-		*curpos = b;
-		*(curpos+1) = g;
-		*(curpos+2) = r;
-		curpos+=3;
-	}
+void clear_display(color col) {
+  uint64_t totalPixels = screenData->width*screenData->height;
+  uint8_t * curpos = (uint8_t *)screenData->framebuffer;
+  uint8_t b = col & 0x0000FF;
+	uint8_t g = (col >> 8) & 0x0000FF;
+	uint8_t r = (col >> 16) & 0x0000FF;
+  for (uint64_t i = 0; i < totalPixels; i++) {
+    *curpos = b;
+    curpos++;
+    *curpos = g;
+    curpos++;
+    *curpos = r;
+    curpos++;
+  }
 }
 
-void drawSquare(uint64_t x, uint64_t y, uint64_t size, uint64_t color){
-	if (x>screenData->width || y > screenData->height || x < 0 || y < 0){
-		return ;
-	}
-	for (int i = 0; i < size; i++){
-		for (int j = 0; j < size; j++){
-			drawPixel(x+i,j+y,color);
-		}
-	}
-}
-
-void drawLine(int xi,int yi,int xf,int yf,uint64_t color){
-	if(xi==xf){
-        for(int i = yi ; i < yf ; i++){
-            drawPixel(xi,i,color);
+void drawRectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, color col) {
+  if (legalCoordinates(x, y)) {
+    uint8_t b = col & 0x0000FF;
+  	uint8_t g = (col >> 8) & 0x0000FF;
+  	uint8_t r = (col >> 16) & 0x0000FF;
+    for (uint64_t i = 0; i < height; i++) {
+      for (uint64_t j = 0; j < width; j++) {
+        if (legalCoordinates(x+j, y+i)) {
+          uint8_t * pos = (screenData->framebuffer+ ((y+i) * screenData->width + (x+j))*3);
+          *pos = b;
+          pos++;
+          *pos = g;
+          pos++;
+          *pos = r;
         }
-        return;
+      }
     }
-    int m = (yf-yi)/(xf-xi);
-    int b = yi - m*xi;
-    for(int i = xi ; i < xf ; i++){
-          drawPixel(i,m*i+b,color);
-    }
+  }
 }
 
-void drawMatrix(uint64_t x, uint64_t y, uint64_t *mat, uint64_t height, uint64_t width,uint64_t size){
-	for (int i = 0; i < height*size; i++){
-	    for (int j = 0; j < width*size; j++){
-		    drawPixel(x+j,y+i,mat[(i/size)*width+j/size]);
-	    }
+void drawLine(uint64_t xStart, uint64_t yStart, uint64_t xEnd, uint64_t yEnd, color col) {
+  if (!legalCoordinates(xStart, yStart) || !legalCoordinates(xEnd, yEnd)) return;
+  if(xStart==xEnd){
+    drawVerticalLine(xStart, yStart, yEnd, col);
+  } else {
+    uint8_t b = col & 0x0000FF;
+  	uint8_t g = (col >> 8) & 0x0000FF;
+  	uint8_t r = ( col >> 16) & 0x0000FF;
+    float m = (yEnd-yStart)/(xEnd-xStart);
+    float b0 = 1.0f * yStart - m*xStart;
+    for(uint64_t i = xStart; i <= xEnd; i++){
+          uint64_t y = (uint64_t) (m * i + b0);
+          uint8_t * pos = (uint8_t *)screenData->framebuffer+ (y * screenData->width + i) * 3;
+          *pos = b;
+          pos++;
+          *pos = g;
+          pos++;
+          *pos = r;
+    }
+  }
+}
+
+static void drawVerticalLine(uint64_t x, uint64_t yStart, uint64_t yEnd, color col) {
+  if (!legalCoordinates(x, yStart) || !legalCoordinates(x, yEnd)) return;
+  uint8_t b = col & 0x0000FF;
+  uint8_t g = (col >> 8) & 0x0000FF;
+  uint8_t r = ( col >> 16) & 0x0000FF;
+  for (uint64_t i = yStart; i <= yEnd; i++) {
+    uint8_t * pos = (uint8_t *)screenData->framebuffer+ (i * screenData->width + x) * 3;
+    *pos = b;
+    pos++;
+    *pos = g;
+    pos++;
+    *pos = r;
+  }
+}
+
+static uint8_t legalCoordinates(uint64_t x, uint64_t y) {
+  if (x>screenData->width || y > screenData->height || x < 0 || y < 0){
+		return 0;
 	}
+  return 1;
 }
 
-void drawChar(uint64_t x, uint64_t y, uint8_t character, uint64_t fontSize, uint64_t fontColor, uint64_t backgroundColor){
-	int aux_x = x;
-	int aux_y = y;
+void drawChar(uint64_t x, uint64_t y, uint8_t character, uint64_t fontSize, color fontColor, color backgroundColor, uint8_t alphaBackground){
+	uint64_t aux_x = x;
+	uint64_t aux_y = y;
+  uint8_t bitIsPresent;
 
+	unsigned char * toDraw = charBitmap(character);
 
-	char bitIsPresent;
-
-	unsigned char* toDraw = charBitmap(character);
-
-	for (int i = 0; i < CHAR_HEIGHT; i++){
-		for (int j = 0; j < CHAR_WIDTH; j++){
+	for (uint8_t i = 0; i < CHAR_HEIGHT; i++){
+		for (uint8_t j = 0; j < CHAR_WIDTH; j++){
 			bitIsPresent = (1<< (CHAR_WIDTH-j)) & toDraw[i];
 
 			if (bitIsPresent){
-				drawSquare(aux_x,aux_y, fontSize, fontColor);
-			} else {
-				drawSquare(aux_x, aux_y, fontSize, backgroundColor);
+				drawRectangle(aux_x, aux_y, fontSize, fontSize, fontColor);
+			} else if (alphaBackground == 0) {
+				drawRectangle(aux_x, aux_y, fontSize, fontSize, backgroundColor);
 			}
 			aux_x+=fontSize;
 		}
 		aux_x = x;
-		aux_y+= fontSize;
+		aux_y += fontSize;
 	}
 }
 
-void drawString(int x,int  y, char *string ,int fontSize,int fontColor, int backgroundColor){
-	if (x>screenData->width || y > screenData->height || x < 0 || y < 0){
-		return ;
-	}
+void drawMatrix(uint64_t x, uint64_t y, color *mat, uint64_t width, uint64_t height,uint64_t size){
 
-	for (int i = 0, move=0; string[i]; i++,move +=((CHAR_SPACE+CHAR_WIDTH))*fontSize) {
-		if (move>screenData->width-CHAR_WIDTH*fontSize)
-		{
-			y += (CHAR_SPACE+CHAR_HEIGHT)*fontSize ;
-			move = 0;
-		}
-		if (y > screenData->height - CHAR_HEIGHT*fontSize){
-			return;
-		}
-		drawChar(x+move,y,string[i],fontSize,fontColor,backgroundColor);
+  for (int i = 0; i < height; i++){
+	    for (int j = 0; j < width; j++){
+        if (!legalCoordinates(x+j, y+i)) continue;
+        color col = mat[i*width+j];
+        uint8_t b = col & 0x0000FF;
+        uint8_t g = (col >> 8 )& 0x0000FF;
+        uint8_t r = ( col >> 16) & 0x0000FF;
+        uint8_t * pos = (uint8_t *)screenData->framebuffer+ ((y+i) * width + (x+j)) * 3;
+        *pos = b;
+        pos++;
+        *pos = g;
+        pos++;
+        *pos = r;
+		    //drawPixel(x+j,y+i,mat[(i/size)*width+j/size]);
+	    }
 	}
 }
 
-void drawPixel(uint64_t x, uint64_t y, uint64_t color ) {
-		if (x>screenData->width || y > screenData->height || x < 0 || y < 0){
-			return ;
-		}
-    char * curpos = screenData->framebuffer;
+void drawPixel(uint64_t x, uint64_t y, color col) {
+		if (!legalCoordinates(x, y)) return;
+    char * curpos = (uint8_t *)screenData->framebuffer;
     curpos+=(x+screenData->width*y)*3;
 
-    uint8_t b = color & 0x0000FF;
-    uint8_t g = (color >> 8 )& 0x0000FF;
-    uint8_t r = ( color >> 16) & 0x0000FF;
+    uint8_t b = col & 0x0000FF;
+    uint8_t g = (col >> 8 )& 0x0000FF;
+    uint8_t r = ( col >> 16) & 0x0000FF;
 
     *curpos = b;
     curpos++;
@@ -171,6 +189,13 @@ void drawPixel(uint64_t x, uint64_t y, uint64_t color ) {
 }
 
 uint64_t getCharWidth() {
-	return CHAR_WIDTH;
+  return CHAR_WIDTH;
 }
+
+uint64_t getCharHeight() {
+  return CHAR_HEIGHT;
+}
+
+
+
 #endif

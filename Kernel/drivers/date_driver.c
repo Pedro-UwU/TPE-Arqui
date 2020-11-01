@@ -4,27 +4,27 @@
 #include <date_driver.h>
 #include <stdint.h>
 
-int getSeconds() {
+uint8_t getSeconds() {
   return getTimeInfo(0);
 }
 
-int getMinutes() {
+uint8_t getMinutes() {
   return getTimeInfo(2);
 }
 
-int getHours() {
+uint8_t getHours() {
   return getTimeInfo(4);
 }
 
-int getDay() {
+uint8_t getDay() {
   return getTimeInfo(7);
 }
 
-int getMonth() {
+uint8_t getMonth() {
   return getTimeInfo(8);
 }
 
-int getYear() {
+uint8_t getYear() {
   return getTimeInfo(9);
 }
 
