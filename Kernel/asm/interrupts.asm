@@ -48,8 +48,6 @@ SECTION .text
 
 %macro irqHandlerMaster 1
 
-	mov rcx, 5h
-
 	push $
 	push rsp
 	mov [rsp+8], rsp

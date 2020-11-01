@@ -4,7 +4,7 @@
 #define CTRL_L 29
 #define SHIFT_L 42
 #define SHIFT_R 54
-#define ALT_L 56
+
 #define BLOCK_M 58
 #define F1 59
 
