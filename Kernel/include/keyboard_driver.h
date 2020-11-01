@@ -12,8 +12,10 @@
 #define KEYS 59
 
 #include <regi.h>
+#include <stdint.h>
 
 void keyboardHandler(registerStruct *);
 uint8_t readKeyboard(char * buff, uint8_t size);
+registerStruct * getRegisters();
 
 #endif
