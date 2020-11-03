@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <colors.h>
-#include <help.h>
 
 static char finished = 0;
 static char * stdIn;
@@ -17,9 +16,7 @@ static char * stdOut;
 static char lines[TOTAL_LINES][MAX_LINE_LENGTH] = {{0}};// = {0};
 static uint8_t lineCursor = 0;
 static uint8_t currentLineNumber = 0;
-char * commands[] = {"help","inforeg","printmem","chess"};
-void (* run[])(int,char * *) = {drawString};
-static int commandsq = 4;
+
 
 static void readKey();
 static void writeToLines(char * buff, int dim);
@@ -140,6 +137,6 @@ static int isCommand(){
 // void addFunction(char * funcName, void (*func)(char *));
 
 // void addFunction(char * funcName, void (*func)(char *)){
-  // 
+  //
 // }
 #endif

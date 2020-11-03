@@ -33,66 +33,7 @@ char * getSTD_OUTAddress() {
 
 int scanf(char * fmt, ...);
 
-// int printf(char * fmt, ...);
-//
-/*
-int strlen(char * buffer){
-    int i=0;
-    while(*buffer!=0){
-        buffer++;
-        i++;
-    }   
-    return i;
-}
-
-void printf(char * fmt, ...){
-    va_list variables;
-
-    va_start(variables, fmt);
-    char buffer[512];
-    unsigned int index=0;
-    while(*fmt != 0){
-        if(*fmt == '%'){
-            fmt++;
-            switch (*fmt){
-            case 'd':
-                index+=intToString(va_arg(variables,int),buffer+index);
-                break;
-            case 'h':
-                index+=intToHex(va_arg(variables,int),buffer+index);
-                break;
-            case 'f':
-                index+=doubleToString(va_arg(variables,double),buffer+index);
-                break;
-            case 's':
-                index += strcpy(buffer+index,va_arg(variables,char *));
-            
-            default:
-                break;
-            }
-            fmt++;
-        } else buffer[index++]=*fmt++; 
-    }
-    buffer[index]=0;
-    puts(buffer);
-    va_end(variables);
-}
-
-void puts(char * buffer){
-    sys_write(buffer,strlen(buffer));
-}
-
-int strcpy(char * dest, char * src){
-    unsigned char i =0;
-    while(src[i]!=0){
-        dest[i] = src[i];
-        i++;
-    }
-    dest[i]=0;
-    return i;
-}
-*/
-//
+int printf(char * fmt, ...);
 
 void writeInStream(char stream, char * str, int size) {
   char * buffer;
