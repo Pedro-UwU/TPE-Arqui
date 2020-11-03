@@ -9,6 +9,6 @@ $(MODULE): $(SOURCES)
 	$(GCC) $(GCCFLAGS) -T sampleCodeModule.ld _loader.c $(SOURCES) -o ../$(MODULE)
 
 clean:
-	rm -rf *.o
+	rm -rf */*.o
 
 .PHONY: all clean print
