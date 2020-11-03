@@ -17,8 +17,8 @@ static char pressCodes[][2] = {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'}, {'3', '#'
 {'/', '?'}, {0, 0}, {0, 0}, {0, 0}, {' ', ' '}, {0, 0}};
 
 static char BUFFER[BUFFER_SIZE] = {0}; //Buffer circular
-static uint8_t startIndex = 0; //Indice del comienzo para el read
-static uint8_t endIndex = 0; //Indice del final para el read
+static uint64_t startIndex = 0; //Indice del comienzo para el read
+static uint64_t endIndex = 0; //Indice del final para el read
 
 void keyboardHandler(registerStruct * registers) {
   uint8_t keyCode = getKeyCode();
