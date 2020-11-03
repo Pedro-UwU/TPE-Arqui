@@ -2,6 +2,7 @@ GLOBAL drawStringSysCall
 GLOBAL readKeyboardSysCall
 GLOBAL isKeyboardEmptySyscall
 GLOBAL clearDisplaySyscall
+GLOBAL drawRectSyscall
 
 section .text
 
@@ -48,6 +49,17 @@ clearDisplaySyscall:
   mov rbp, rsp
 
   mov rax, 2    ;ID clear Display
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+drawRectSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 5 ; drawRectangle syscall
   int 80h
 
   mov rsp, rbp
