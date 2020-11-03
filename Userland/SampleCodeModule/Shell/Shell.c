@@ -41,7 +41,7 @@ static void readKey() {
   if (readKeyboard(buffer, bufferLength)) {
     writeToLines(buffer, bufferLength);
     //drawString(0, 0, lines[0], MAX_LINE_LENGTH-1, LIGHT_GRAY, BLACK, 1, 0);
-    drawShellLines();
+    //drawShellLines();
   }
 }
 
@@ -54,17 +54,19 @@ static void writeToLines(char * buff, int dim) {
         lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor-1] = lines[0][lineCursor];
         lineCursor-=lineCursor==0?0:1; //TODO: checkear por que el lineCursor-- se va negativo aunque no deberia entrar al if
       }
-    } else if (buff[i] < 127){
+    } else (buff[i]){
       lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor] = buff[i];
       lineCursor++;
     }
   }
+  drawBottomLine();
 }
 
 static void addLine() {
   currentLineNumber++;
   clearShellLine(currentLineNumber);
   lineCursor=0;
+  drawShellLines();
 }
 
 static void drawShellLines() {
@@ -88,6 +90,10 @@ static void clearShellLine(uint8_t line) {
   for (int i = 0; i < MAX_LINE_LENGTH; i++) {
     lines[line%(TOTAL_LINES-1)][i] = 0;
   }
+}
+
+static void drawBottomLine() {
+  drawString(0, SCREEN_HEIGHT-BASE_CHAR_HEIGHT, lines[(i+currentLineNumber)%(TOTAL_LINES-1)], MAX_LINE_LENGTH-1, LIGHT_GRAY, BLACK, 1, 0);
 }
 
 //
