@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <colors.h>
+#include <commands.h>
 
 static char finished = 0;
 static char * stdIn;
@@ -16,7 +17,6 @@ static char * stdOut;
 static char lines[TOTAL_LINES][MAX_LINE_LENGTH] = {{0}};// = {0};
 static uint8_t lineCursor = 0;
 static uint8_t currentLineNumber = 0;
-
 
 static void readKey();
 static void writeToLines(char * buff, int dim);
@@ -27,6 +27,9 @@ static void drawBottomLine();
 static void clearScreenLine(uint8_t line);
 static void exeCommand(int i);
 static int isCommand();
+
+char ** commandsNames={"test"};
+void  (* run[])(int,char * * ) = {test};
 
 void init_shell() {
   stdIn = getSTD_INAddress();
@@ -55,9 +58,9 @@ static void readKey() {
 static void writeToLines(char * buff, int dim) {
   for (int i = 0; i < dim && buff[i] != 0 && i < MAX_LINE_LENGTH; i++) {
     if (buff[i] == '\n' || lineCursor == (MAX_LINE_LENGTH - 1)) { //El -1 es para que el ultimo elemento sea un 0
-      // int i = isCommand();
+      int i = isCommand();
       // if (i>0) {
-      //   exeCommand(i);
+        // exeCommand(i);
       // }
       addLine();
     } else if (buff[i] == '\b') {
@@ -115,24 +118,25 @@ static void clearScreenLine(uint8_t line){
 
 //ejecutaria los commands
 // static void exeCommand(int i){
+//   commands[i]();
 // }
 
-//devuelve que comando es si no esta  devuelve -1
-static int isCommand(){
-  int equals = 1;
-  for (int i = 0; i < commandsq; i++) {
-    equals = 1;
-    for (int j = 0; commands[i][j] && lines[currentLineNumber%(TOTAL_LINES-1)][j] && equals; j++){
-      if (commands[i][j] != lines[currentLineNumber%(TOTAL_LINES-1)][j]){
-        equals =0;
-      }
-    }
-    if (equals){
-      return i;
-    }
-  }
-  return -1;
-}
+// //devuelve que comando es si no esta  devuelve -1
+// static int isCommand(){
+//   int equals = 1;
+//   for (int i = 0; i < commandsq; i++) {
+//     equals = 1;
+//     for (int j = 0; commands[i][j] && lines[currentLineNumber%(TOTAL_LINES-1)][j] && equals; j++){
+//       if (commands[i][j] != lines[currentLineNumber%(TOTAL_LINES-1)][j]){
+//         equals =0;
+//       }
+//     }
+//     if (equals){
+//       return i;
+//     }
+//   }
+//   return -1;
+// }
 
 // void addFunction(char * funcName, void (*func)(char *));
 
