@@ -7,6 +7,7 @@
 #include <timer_driver.h>
 #include <date_driver.h>
 #include <IO_driver.h>
+#include <clib.h>
 
 void writeStr(registerStruct * registers);
 void getDateInfo(uint8_t mode, uint8_t * target);
@@ -16,26 +17,27 @@ void syscallHandler(registerStruct * registers) {
   switch(option) {
     //READ KEYBOARD
     case 0:
-    //rsi -> puntero a buffer
-    //rdx -> uint8_t size
-    readKeyboard((char *)registers->rsi, (uint8_t) registers->rdx);
+    //rdi -> puntero a buffer
+    //rsi -> uint8_t size
+    readKeyboard((char *)registers->rdi, (uint8_t) registers->rsi);
     break;
 
     //WRITE STR
     case 1:
-    //rsi -> puntero a buffer
-    //rdx -> size
-    //rbx -> x
+    //rdi -> puntero a buffer
+    //rsi -> size
+    //rdx -> x
     //rcx -> y
     //r8 -> fontColor
     //r9 -> backgroundColor
     //r10 -> fontSize
+    //r11 -> alphaBackground
     writeStr(registers);
     break;
 
     case 2:
-    //rsi color
-      clearDisplay((uint64_t) registers->rsi);
+    //rdi color
+      clearDisplay((uint64_t) registers->rdi);
       break;
     case 3:
     // r9 xstart , r8 ystart, r10 xend, r11 yend, rsi color
@@ -77,6 +79,12 @@ void syscallHandler(registerStruct * registers) {
     //rsi -> direccion del buffer para guardar
     //rdx -> total de bytes que se quieren leer
     get32bytesFromAddress(registers->rdi, (uint64_t*)registers->rsi, (uint8_t)registers->rdx);
+    break;
+
+    case 11:
+    //rdi -> puntero a int para devolver si hay algo
+    bufferEmpty((uint64_t *) registers->rdi);
+    break;
   }
 }
 
@@ -99,12 +107,15 @@ void getDateInfo(uint8_t mode, uint8_t * target) {
 
 void writeStr(registerStruct * registers) {
   uint64_t xOffset = 0;
-  char * buffer = (char *)registers->rsi;
-  for (uint64_t i = 0; i < registers->rdx && buffer[i] != 0; i++) {
-    char ch = ((char *)registers->rsi)[i];
-    drawChar(registers->rbx + xOffset, registers->rcx, ch, registers->r10, registers->r8, registers->r9, 1);
-    xOffset += getCharWidth() * registers->r10;
+  char * buffer = (char *)registers->rdi;
+  for (uint64_t i = 0; i < registers->rsi && buffer[i] != 0; i++) {
+    char ch = ((char *)registers->rdi)[i];
+    if (isPrintable(ch)) {
+      drawChar(registers->rdx + xOffset, registers->rcx, ch, registers->r10, registers->r8, registers->r9, registers->r11);
+      xOffset += getCharWidth() * registers->r10;
+    }
   }
+  //drawChar(0, 0, 'A',1, 0xFFFFFF, 0, 0);
 }
 
 #endif

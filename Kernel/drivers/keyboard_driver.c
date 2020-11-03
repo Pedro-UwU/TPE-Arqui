@@ -6,7 +6,7 @@
 #include <regi.h>
 #include <IO_driver.h>
 #include <stdint.h>
-#define BUFFER_SIZE 32
+#define BUFFER_SIZE 64
 
 static uint8_t shiftL = 0, shiftR = 0;
 static char pressCodes[][2] = {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'}, {'3', '#'}, {'4', '$'}, {'5', '%'}, {'6', '^'}, {'7', '&'},
@@ -51,5 +51,9 @@ uint8_t readKeyboard(char * buff, uint8_t size) {
     startIndex++;
   }
   return i;
+}
+
+void bufferEmpty(uint64_t * target) {
+  *target = (endIndex - startIndex);
 }
 #endif

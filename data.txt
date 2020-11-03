@@ -6,33 +6,28 @@ gcc -ansi -std=c99 -Wall -pedantic -o bmfs.bin bmfs.c
 make[2]: Leaving directory '/root/Bootloader/BMFS'
 cd Pure64; make all
 make[2]: Entering directory '/root/Bootloader/Pure64'
-nasm src/bootsectors/bmfs_mbr.asm -o bmfs_mbr.sys
-nasm src/bootsectors/pxestart.asm -o pxestart.sys
-cd src; nasm pure64.asm -o ../pure64.sys
+make[2]: Nothing to be done for 'all'.
 make[2]: Leaving directory '/root/Bootloader/Pure64'
 make[1]: Leaving directory '/root/Bootloader'
 cd Kernel; make all
 make[1]: Entering directory '/root/Kernel'
-nasm -felf64 loader.asm -o loader.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c lib.c -o lib.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c syscalls.c -o syscalls.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c irqDispatcher.c -o irqDispatcher.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c naiveConsole.c -o naiveConsole.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c moduleLoader.c -o moduleLoader.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c font.c -o font.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c idtLoader.c -o idtLoader.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c kernel.c -o kernel.o
-nasm -felf64 asm/date_asm.asm -o asm/date_asm.o
-nasm -felf64 asm/interrupts.asm -o asm/interrupts.o
-nasm -felf64 asm/keyboard_asm.asm -o asm/keyboard_asm.o
-nasm -felf64 asm/libasm.asm -o asm/libasm.o
-nasm -felf64 asm/test.asm -o asm/test.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c drivers/video_driver.c -o drivers/video_driver.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c drivers/date_driver.c -o drivers/date_driver.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c drivers/keyboard_driver.c -o drivers/keyboard_driver.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c drivers/timer_driver.c -o drivers/timer_driver.o
-gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c drivers/video_driver_LEGACY.c -o drivers/video_driver_LEGACY.o
-ld --warn-common -z max-page-size=0x1000 -T kernel.ld -o kernel.bin loader.o lib.o syscalls.o irqDispatcher.o naiveConsole.o moduleLoader.o font.o idtLoader.o kernel.o asm/date_asm.o asm/interrupts.o asm/keyboard_asm.o asm/libasm.o asm/test.o drivers/video_driver.o drivers/date_driver.o drivers/keyboard_driver.o drivers/timer_driver.o drivers/video_driver_LEGACY.o 
-Makefile:19: recipe for target 'kernel.bin' failed
+make[1]: Nothing to be done for 'all'.
 make[1]: Leaving directory '/root/Kernel'
-Makefile:8: recipe for target 'kernel' failed
+cd Userland; make all
+make[1]: Entering directory '/root/Userland'
+echo "AAAAAAAAAAA"
+AAAAAAAAAAA
+cd SampleCodeModule; make
+make[2]: Entering directory '/root/Userland/SampleCodeModule'
+ld  -T ./sampleCodeModule.ld _loader.o asm/syscallsASM.o Shell/Shell.o libs/stdlib.o libs/stdio.o libs/stdGraphics.o sampleCodeModule.o -o ../0000-sampleCodeModule.bin
+echo "AAAA"
+AAAA
+make[2]: Leaving directory '/root/Userland/SampleCodeModule'
+printf "This is sample data." >> 0001-sampleDataModule.bin && dd if=/dev/zero bs=1 count=1 >> 0001-sampleDataModule.bin
+make[1]: Leaving directory '/root/Userland'
+cd Image; make all
+make[1]: Entering directory '/root/Image'
+../Toolchain/ModulePacker/mp.bin ../Kernel/kernel.bin ../Userland/0000-sampleCodeModule.bin ../Userland/0001-sampleDataModule.bin -o packedKernel.bin
+Makefile:22: recipe for target 'packedKernel.bin' failed
+make[1]: Leaving directory '/root/Image'
+Makefile:14: recipe for target 'image' failed

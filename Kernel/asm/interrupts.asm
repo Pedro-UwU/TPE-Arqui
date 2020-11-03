@@ -53,7 +53,6 @@ SECTION .text
 	mov [rsp+8], rsp
 
 	pushState
-  ;mov rsp, [rsp-8];Seteo el rsp a su estado original
 
 
   mov rsi, rsp ;puntero a los registros
@@ -67,6 +66,7 @@ SECTION .text
 
 	popState
 
+	;saco los dos push de antes de hacer un pushState
 	mov [regBackUp], rax
 	pop rax
 	pop rax

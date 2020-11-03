@@ -122,7 +122,7 @@ static void drawVerticalLine(uint64_t x, uint64_t yStart, uint64_t yEnd, color c
 }
 
 static uint8_t legalCoordinates(uint64_t x, uint64_t y) {
-  if (x>screenData->width || y > screenData->height || x < 0 || y < 0){
+  if (x>=screenData->width || y >= screenData->height || x < 0 || y < 0){
 		return 0;
 	}
   return 1;

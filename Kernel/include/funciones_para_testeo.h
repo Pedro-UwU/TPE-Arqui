@@ -30,7 +30,7 @@ void printReg() {
 void printStr(uint64_t x, uint64_t y, char * str, uint64_t size) {
   uint64_t xOffset = 0;
   for (uint64_t i = 0; i < size && str[i] != 0; i++) {
-    drawChar(x+xOffset, y, str[i], 1, 0xFFFFFF, 0, 1);
+    drawChar(x+xOffset, y, str[i], 1, 0xFFFFFF, 0, 0);
     xOffset += getCharWidth();
   }
 }
