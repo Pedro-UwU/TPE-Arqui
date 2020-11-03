@@ -23,6 +23,7 @@ static void writeToLines(char * buff, int dim);
 static void addLine();
 static void drawShellLines();
 static void clearShellLine(uint8_t line);
+static void drawBottomLine();
 
 void init_shell() {
   stdIn = getSTD_INAddress();
@@ -54,7 +55,7 @@ static void writeToLines(char * buff, int dim) {
         lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor-1] = lines[0][lineCursor];
         lineCursor-=lineCursor==0?0:1; //TODO: checkear por que el lineCursor-- se va negativo aunque no deberia entrar al if
       }
-    } else (buff[i]){
+    } else {
       lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor] = buff[i];
       lineCursor++;
     }
@@ -93,7 +94,8 @@ static void clearShellLine(uint8_t line) {
 }
 
 static void drawBottomLine() {
-  drawString(0, SCREEN_HEIGHT-BASE_CHAR_HEIGHT, lines[(i+currentLineNumber)%(TOTAL_LINES-1)], MAX_LINE_LENGTH-1, LIGHT_GRAY, BLACK, 1, 0);
+  drawString(0, SCREEN_HEIGHT-BASE_CHAR_HEIGHT, "> ", 3, LIGHT_GRAY, BLACK, 1, 0);
+  drawString(BASE_CHAR_WIDTH*2, SCREEN_HEIGHT-BASE_CHAR_HEIGHT, lines[(currentLineNumber)%(TOTAL_LINES-1)], MAX_LINE_LENGTH-1, LIGHT_GRAY, BLACK, 1, 0);
 }
 
 //
