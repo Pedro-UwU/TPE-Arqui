@@ -64,6 +64,7 @@ static void writeToLines(char * buff, int dim) {
       int i = isCommand();
       if (i>=0) {
         exeCommand(i);
+        drawShellLines();
       }else{
         drawString(0,SCREEN_HEIGHT-BASE_CHAR_HEIGHT*2,"COMMAND NOT FOUND",strlen("COMMAND NOT FOUND"),0xff0000,0,1,0);
       }

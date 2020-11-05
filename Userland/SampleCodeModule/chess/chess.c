@@ -2,17 +2,7 @@
 
 char *figures[PIECES_AMOUNT]={"king","queen","bishop","knight","rook","pawn"};
 
-typedef struct {
-    int y;
-    char x;
-}coordinate;
-
-typedef struct {
-    int pieceType;
-    coordinate position;
-}pieceInfo;
-
-int board[8][8] = {
+int board[SQUARES][SQUARES] ={
     {5,4,3,2,1,3,4,5},
     {6,6,6,6,6,6,6,6},
     {0,0,0,0,0,0,0,0},
@@ -21,7 +11,7 @@ int board[8][8] = {
     {0,0,0,0,0,0,0,0},
     {-6,-6,-6,-6,-6,-6,-6,-6},
     {-5,-4,-3,-1,-2,-3,-4,-5}
-    };
+    };;
 
 static char pieces[PIECES_AMOUNT][PIECES_SIZE][PIECES_SIZE] = {
     {
@@ -92,9 +82,31 @@ static void reDrawChessConsole(char buffer[][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2],i
 static void reDrawChessConsole(char buffer[][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2],int actLine);
 static void endGame();
 static void drawBoard();
+int playAgain();
+void newGame();
 
 void chess(){
     clearScreen(0x800000);
+    if (playAgain()){
+    int newboard[SQUARES][SQUARES] = {{5,4,3,2,1,3,4,5},
+    {6,6,6,6,6,6,6,6},
+    {0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0},
+    {-6,-6,-6,-6,-6,-6,-6,-6},
+    {-5,-4,-3,-1,-2,-3,-4,-5}
+    };
+    for (int i = 0; i < SQUARES; i++){
+        for (int j = 0; j < SQUARES; j++){
+            board[i][j] = newboard[i][j];
+        }
+        
+    }
+    
+        }
+    clearScreen(0x800000);
+    
     int x =SCREEN_WIDTH/2-BOARDDIM/2;
     int y= BOARDDIM/8;
     //indices
@@ -117,6 +129,26 @@ void chess(){
     drawString(PLAYER_12_PLACE_X,PLAYER_2_PLACE_Y,"Player 2",strlen("player 2"),0xffffff,0x000000,2,1);
     
     console();
+}
+
+int playAgain(){
+    drawString(SCREEN_WIDTH/2-3*BASE_CHAR_WIDTH*16,CONSOLE_LIMIT_Y,"DO YOU WANT TO PLAY A NEW GAME?",32,0xffffff,0,3,1);
+    drawString(SCREEN_WIDTH/2-3*BASE_CHAR_WIDTH*10,CONSOLE_LIMIT_Y+BASE_CHAR_HEIGHT*3*2,"TYPE [ y ] or [ n ]",20,0xffffff,0,3,1);
+    char buf[1];
+    buf[0] = 0;
+    int ans=0;
+    while (1){
+        if (readKeyboard(buf, 1)) {
+            if (buf[0]=='y'){
+                ans=1;
+                break;
+            } else if(buf[0]=='n'){
+                ans=0;
+                break;
+            }   
+        }
+    }
+    return ans;
 }
 
 static void drawBoard(){
@@ -287,6 +319,7 @@ static void console(){
             buf[i] = 0;
         }
         if (readKeyboard(buf, bufferLength)) {
+            if (buf[0]=='x') break; 
             if (buf[0]=='\n' || l > MAX_LENGTH){
                 l=0;
                 reDrawChessConsole(buffer,h);
