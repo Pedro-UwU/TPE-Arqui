@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 int atoi(char * str);
-double strToDouble(char * str);
-int intToStr(char *str, int num);
+// double strToDouble(char * str);
+int intToString(unsigned long long num, char * buffer);
 int strlen(char *str);
 int strcmp(char * str1, char * str2);
 int intToBase(unsigned long long num, int base, char*buffer);
@@ -18,6 +18,48 @@ int atoi(char * str){
   return aux;
 }
 
+// char* itoa(int num, char* str, int base){ 
+//     int i = 0; 
+//     int isNegative = 0; 
+  
+//     /* Handle 0 explicitely, otherwise empty string is printed for 0 */
+//     if (num == 0) 
+//     { 
+//         str[i++] = '0'; 
+//         str[i] = '\0'; 
+//         return str; 
+//     } 
+  
+//     // In standard itoa(), negative numbers are handled only with  
+//     // base 10. Otherwise numbers are considered unsigned. 
+//     if (num < 0 && base == 10) 
+//     { 
+//         isNegative = 1; 
+//         num = -num; 
+//     } 
+  
+//     // Process individual digits 
+//     while (num != 0) 
+//     { 
+//         int rem = num % base; 
+//         str[i++] = (rem > 9)? (rem-10) + 'a' : rem + '0'; 
+//         num = num/base; 
+//     } 
+  
+//     // If number is negative, append '-' 
+//     if (isNegative) 
+//         str[i++] = '-'; 
+  
+//     str[i] = '\0'; // Append string terminator 
+  
+//     // Reverse the string 
+//     for (int j = 0; j < i/2; j++){
+//         int aux = str[j];
+//         str[j] = str[i-j-1];
+//         str[i-j-1]=aux;
+//     }  
+//     return str; 
+// }
 int intToBase(unsigned long long num, int base, char*buffer){
     char stack[11];
     int c = 0;
@@ -40,7 +82,7 @@ int intToBase(unsigned long long num, int base, char*buffer){
     *buffer=0;
     return c;
 }
-
+/*
 double strToDouble(char * str){
   double aux = 0;
   while (*str!=','){
@@ -55,10 +97,10 @@ double strToDouble(char * str){
   aux/=(double) 10 * i;
   return aux;
 }
-
+*/
 
 int intToString(unsigned long long num, char * buffer){
-    return intToBase(num,10,buffer);
+  return intToBase(num,10,buffer);
 }
 
 int strlen(char *str){

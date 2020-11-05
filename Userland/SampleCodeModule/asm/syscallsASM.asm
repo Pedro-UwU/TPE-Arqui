@@ -3,6 +3,9 @@ GLOBAL readKeyboardSysCall
 GLOBAL isKeyboardEmptySyscall
 GLOBAL clearDisplaySyscall
 GLOBAL drawRectSyscall
+GLOBAL getTimeSyscall
+GLOBAL getRegisters
+GLOBAL drawMatrixSyscall
 
 section .text
 
@@ -60,6 +63,39 @@ drawRectSyscall:
   mov rbp, rsp
 
   mov rax, 5 ; drawRectangle syscall
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+drawMatrixSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 6 ; drawMatrix syscall
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+getTimeSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 8
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+getRegisters:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 9
   int 80h
 
   mov rsp, rbp

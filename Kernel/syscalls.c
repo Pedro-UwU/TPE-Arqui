@@ -45,7 +45,7 @@ void syscallHandler(registerStruct * registers) {
       break;
     case 4:
     // r9 xi, r8 yi, rsi color
-      drawPixel((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->rsi);
+      drawPixel((uint64_t) registers->rdi,(uint64_t) registers->rsi,(uint64_t) registers->rdx);
       break;
     case 5:
     // rdi xi, rsi yi , rdx width, rc8 height , r8 color
@@ -53,7 +53,7 @@ void syscallHandler(registerStruct * registers) {
       break;
     case 6:
     // r9 xi, r8 yi, rsi puntero a matriz, r10 width, r11 height , r15 size
-      drawMatrix((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t *) registers->rsi,(uint64_t) registers->r10,(uint64_t) registers->r11,(uint64_t) registers->r15);
+      drawMatrix((uint64_t) registers->rdi,(uint64_t) registers->rsi,(uint64_t *) registers->rdx,(uint64_t) registers->rcx,(uint64_t) registers->r8,(uint64_t) registers->r9);
       break;
 
 

@@ -1,7 +1,7 @@
 #ifndef SHELL
 #define SHELL
 
-#define TOTAL_LINES 64
+#define TOTAL_LINES 63
 #define MAX_LINE_LENGTH 129
 
 #include <stdGraphics.h>
@@ -9,10 +9,13 @@
 #include <stdint.h>
 #include <colors.h>
 #include <commands.h>
+#include <stdlib.h>
+#include <chess.h>
 
 static char finished = 0;
 static char * stdIn;
 static char * stdOut;
+
 
 static char lines[TOTAL_LINES][MAX_LINE_LENGTH] = {{0}};// = {0};
 static uint8_t lineCursor = 0;
@@ -28,8 +31,8 @@ static void clearScreenLine(uint8_t line);
 static void exeCommand(int i);
 static int isCommand();
 
-char ** commandsNames={"test"};
-void  (* run[])(int,char * * ) = {test};
+char commandsNames[5][10]={"timer","test","inforeg","chess"};
+void  (* run[])(int,char * * ) = {timer,test,inforeg,drawBoard};
 
 void init_shell() {
   stdIn = getSTD_INAddress();
@@ -50,19 +53,19 @@ static void readKey() {
   }
   if (readKeyboard(buffer, bufferLength)) {
     writeToLines(buffer, bufferLength);
-    //drawString(0, 0, lines[0], MAX_LINE_LENGTH-1, LIGHT_GRAY, BLACK, 1, 0);
-    //drawShellLines();
   }
 }
 
 static void writeToLines(char * buff, int dim) {
   for (int i = 0; i < dim && buff[i] != 0 && i < MAX_LINE_LENGTH; i++) {
     if (buff[i] == '\n' || lineCursor == (MAX_LINE_LENGTH - 1)) { //El -1 es para que el ultimo elemento sea un 0
-      int i = isCommand();
-      // if (i>0) {
-        // exeCommand(i);
-      // }
       addLine();
+      int i = isCommand();
+      if (i>=0) {
+        exeCommand(i);
+      }else{
+        drawString(0,SCREEN_HEIGHT-BASE_CHAR_HEIGHT*2,"COMMAND NOT FOUND",strlen("COMMAND NOT FOUND"),0xff0000,0,1,0);
+      }
     } else if (buff[i] == '\b') {
       if (lineCursor > 0) {
         lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor-1] = lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor];
@@ -117,30 +120,18 @@ static void clearScreenLine(uint8_t line){
 }
 
 //ejecutaria los commands
-// static void exeCommand(int i){
-//   commands[i]();
-// }
+static void exeCommand(int i){
+  run[i](0,0);
+}
 
-// //devuelve que comando es si no esta  devuelve -1
-// static int isCommand(){
-//   int equals = 1;
-//   for (int i = 0; i < commandsq; i++) {
-//     equals = 1;
-//     for (int j = 0; commands[i][j] && lines[currentLineNumber%(TOTAL_LINES-1)][j] && equals; j++){
-//       if (commands[i][j] != lines[currentLineNumber%(TOTAL_LINES-1)][j]){
-//         equals =0;
-//       }
-//     }
-//     if (equals){
-//       return i;
-//     }
-//   }
-//   return -1;
-// }
+//devuelve que comando es si no esta  devuelve -1
+static int isCommand(){
+  for (int i = 0; i < 5; i++) {
+    if (!strcmp(commandsNames[i],lines[(currentLineNumber-1)%(TOTAL_LINES-1)]) && lines[(currentLineNumber-1)%(TOTAL_LINES-1)][0]){
+      return i;
+    }
+  }
+  return -1;
+}
 
-// void addFunction(char * funcName, void (*func)(char *));
-
-// void addFunction(char * funcName, void (*func)(char *)){
-  //
-// }
 #endif

@@ -1,2 +1,8 @@
+#ifndef COMMANDS_H
+#define COMMANDS_H
 
-int test();
+void test();
+void timer();
+void inforeg();
+
+#endif
