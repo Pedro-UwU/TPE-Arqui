@@ -18,4 +18,8 @@ void clearScreen(uint64_t color) {
 void drawRect(int xi, int yi, int width, int height, uint64_t color){
   drawRectSyscall((uint64_t) xi, (uint64_t) yi, (uint64_t) width, (uint64_t) height, color);
 }
+
+void drawMatrix(int x, int y, int *mat,int width, int height,int size){
+  drawMatrixSyscall((uint64_t) x,(uint64_t) y,(uint64_t *)mat,(uint64_t) width,(uint64_t) height,(uint64_t) size);
+}
 #endif

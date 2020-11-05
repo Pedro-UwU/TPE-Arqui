@@ -153,20 +153,20 @@ void drawChar(uint64_t x, uint64_t y, uint8_t character, uint64_t fontSize, colo
 
 void drawMatrix(uint64_t x, uint64_t y, color *mat, uint64_t width, uint64_t height,uint64_t size){
 
-  for (int i = 0; i < height; i++){
-	    for (int j = 0; j < width; j++){
-        if (!legalCoordinates(x+j, y+i)) continue;
-        color col = mat[i*width+j];
+  for (int i = 0; i < height*size; i++){
+	    for (int j = 0; j < width*size; j++){
+        if (!legalCoordinates(x+j, y+i) ) continue;
+        if (mat[(i/size)*width+(j/size)]==0x01000000) continue;
+        color col = mat[(i/size)*width+(j/size)];
         uint8_t b = col & 0x0000FF;
         uint8_t g = (col >> 8 )& 0x0000FF;
         uint8_t r = ( col >> 16) & 0x0000FF;
-        uint8_t * pos = (uint8_t *)screenData->framebuffer+ ((y+i) * width + (x+j)) * 3;
+        uint8_t * pos = (uint8_t *)screenData->framebuffer+ ((y+i) * screenData->width + (x+j)) * 3;
         *pos = b;
         pos++;
         *pos = g;
         pos++;
         *pos = r;
-		    //drawPixel(x+j,y+i,mat[(i/size)*width+j/size]);
 	    }
 	}
 }

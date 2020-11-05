@@ -52,7 +52,7 @@ void syscallHandler(registerStruct * registers) {
       drawRectangle((uint64_t) registers->rdi,(uint64_t) registers->rsi,(uint64_t) registers->rdx,(uint64_t) registers->rcx,(uint64_t) registers->r8);
       break;
     case 6:
-    // r9 xi, r8 yi, rsi puntero a matriz, r10 width, r11 height , r15 size
+    // rdi xi, rsi yi, rdx puntero a matriz, rcx width, r8 height , r9 size
       drawMatrix((uint64_t) registers->rdi,(uint64_t) registers->rsi,(uint64_t *) registers->rdx,(uint64_t) registers->rcx,(uint64_t) registers->r8,(uint64_t) registers->r9);
       break;
 

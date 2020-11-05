@@ -11,6 +11,7 @@
 #include <commands.h>
 #include <stdlib.h>
 #include <chess.h>
+#include <timer.h>
 
 static char finished = 0;
 static char * stdIn;
@@ -32,7 +33,7 @@ static void exeCommand(int i);
 static int isCommand();
 
 char commandsNames[5][10]={"timer","test","inforeg","chess"};
-void  (* run[])(int,char * * ) = {timer,test,inforeg,drawBoard};
+void  (* run[])(int,char * * ) = {timer,test,inforeg,chess};
 
 void init_shell() {
   stdIn = getSTD_INAddress();

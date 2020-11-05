@@ -9,4 +9,5 @@
 void drawString(int x, int y, char * buffer, int dim, uint64_t fontColor, uint64_t backgroundColor, int fontSize, int alphaBackground);
 void clearScreen(uint64_t color);
 void drawRect(int xi, int yi, int width, int height, uint64_t color);
+void drawMatrix(int x, int y, uint64_t *mat,int width, int height,int size);
 #endif

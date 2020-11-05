@@ -9,5 +9,6 @@ int readHours();
 int readDays();
 int readMonths();
 int readYear();
+void formatTime(int secondsT,char *buffer);
 
 #endif
