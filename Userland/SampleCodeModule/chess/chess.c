@@ -139,7 +139,7 @@ static void loadColorsPieces(uint64_t pieceC[][PIECES_SIZE],int j){
 }
 
 static void console(){
-    char buffer[TOTAL_LINES_CHESS][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2] ={0};
+    char buffer[TOTAL_LINES_CHESS][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2] = {{0}};
     reDrawChessConsole(buffer,0);
     int movx = 7*BASE_CHAR_WIDTH+CONSOLE_LIMIT_X;
     int l=0,h=0;
