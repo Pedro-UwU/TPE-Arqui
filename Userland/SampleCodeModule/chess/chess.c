@@ -286,23 +286,23 @@ static void console(){
     reDrawChessConsole(buffer,1);
     drawBoard();
     int movx = 7*BASE_CHAR_WIDTH+CONSOLE_LIMIT_X;
-    int l=0,h=0;
+    int l=0,h=1;
     int prevSeconds = readSeconds();
     int secondsV[2]={0,0};
     while (1){
         int seconds = readSeconds();
         if (prevSeconds!=seconds){
-            secondsV[h%2] += 1;
+            secondsV[(h+1)%2] += 1;
             char toPrintTimer[5];
-            toPrintTimer[0] = secondsV[h%2]/60/10%10+'0';
-            toPrintTimer[1] = secondsV[h%2]/60%10+'0';
+            toPrintTimer[0] = secondsV[(h+1)%2]/60/10%10+'0';
+            toPrintTimer[1] = secondsV[(h+1)%2]/60%10+'0';
             toPrintTimer[2] = ':';
-            toPrintTimer[3] = secondsV[h%2]%60/10%10+'0';
-            toPrintTimer[4] = secondsV[h%2]%60%10+'0';
+            toPrintTimer[3] = secondsV[(h+1)%2]%60/10%10+'0';
+            toPrintTimer[4] = secondsV[(h+1)%2]%60%10+'0';
             prevSeconds = seconds;
-            int movy = PLAYER_1_PLACE_Y+2*BASE_CHAR_HEIGHT;
-            drawRect(PLAYER_12_PLACE_X,movy+(h%2)*BOARDDIM/2,5*2*BASE_CHAR_WIDTH,2*BASE_CHAR_HEIGHT,0x800000);
-            drawString(PLAYER_12_PLACE_X,movy+(h%2)*BOARDDIM/2,toPrintTimer,5,0xffffff,0,2,1);
+            int movy = PLAYER_2_PLACE_Y+2*BASE_CHAR_HEIGHT;
+            drawRect(PLAYER_12_PLACE_X,movy+((h)%2)*BOARDDIM/2,5*2*BASE_CHAR_WIDTH,2*BASE_CHAR_HEIGHT,0x800000);
+            drawString(PLAYER_12_PLACE_X,movy+((h)%2)*BOARDDIM/2,toPrintTimer,5,0xffffff,0,2,1);
         }
         if (secondsV[1]-secondsV[0]>60 || secondsV[1]>3600){
             endGame(1);
@@ -322,7 +322,7 @@ static void console(){
             if (buf[0]=='x') break; 
             if (buf[0]=='\n' || l > MAX_LENGTH){
                 l=0;
-                reDrawChessConsole(buffer,h);
+                reDrawChessConsole(buffer,h+1);
                 int xi = buffer[h][0]-'a';
                 int yi = buffer[h][1]-'0'-1;
                 int xf =buffer[h][6]-'a';
@@ -341,12 +341,15 @@ static void console(){
                     board[yi][xi] = 0;
                     drawBoard();
                     drawRect(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y,18*BASE_CHAR_WIDTH,BASE_CHAR_HEIGHT,0);
-                    
+                    if((board[yf][xf]==6 && yf==7) || (board[yf][xf] == -6 && yf==0)){
+                        promotePiece(xf,yf);
+                        drawBoard();
+                    }
+                    h=(h+1)%TOTAL_LINES_CHESS;
                 }
                 else {
                     drawString(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y,"UNVALID MOVEMENT",17,0xffffff,0,1,0);
                 }
-                h=(h+1)%TOTAL_LINES_CHESS;
             } else if (buf[0]=='\b'){
                 if (l>0){
                     l--;
@@ -359,6 +362,33 @@ static void console(){
             }
         }
     }
+}
+
+void promotePiece(int x,int y){
+    drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,42*BASE_CHAR_WIDTH,(10)*BASE_CHAR_HEIGHT,0x000000);
+    drawString(CONSOLE_LIMIT_X,PROMOTE_LOGS,"you can promote your pawn",26,0xffffff,1,1,1);
+    drawString(CONSOLE_LIMIT_X,PROMOTE_LOGS,"choose between:",16,0xffffff,1,1,1);
+    for (int i =1;i<PIECES_AMOUNT-1;i++){
+        drawString(CONSOLE_LIMIT_X,PROMOTE_LOGS+BASE_CHAR_HEIGHT*(i+2,figures[i],strlen(figures[i]),0xffffff,1,1,0);
+        char pieceNumber[2];
+        intToBase(i,10,pieceNumber);
+        drawString(CONSOLE_LIMIT_X+BASE_CHAR_WIDTH*10,PROMOTE_LOGS+BASE_CHAR_HEIGHT*i,pieceNumber,1,0xffffff,1,1,0);
+    }
+    while(1){
+        uint8_t bufferLength = 1;
+        char buf[bufferLength];
+        for (int i = 0; i < bufferLength; i++){
+            buf[i] = 0;
+        }
+        int team = (board[y][x]>0)?1:-1;
+        if (readKeyboard(buf, bufferLength)) {
+            if (buf[0]-'0' < 5 &&  buf[0]-'0'>0){
+                board[y][x] = (buf[0]-'0'+1)*team;
+                break;
+            }
+        }
+    }
+    drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,42*BASE_CHAR_WIDTH,(PIECES_AMOUNT-1)*BASE_CHAR_HEIGHT,0x800000);
 }
 
 static void endGame(int winner){
