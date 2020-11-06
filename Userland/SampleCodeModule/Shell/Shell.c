@@ -66,7 +66,7 @@ static void writeToLines(char * buff, int dim) {
         exeCommand(i);
         drawShellLines();
       }else{
-        drawString(0,SCREEN_HEIGHT-BASE_CHAR_HEIGHT*2,"COMMAND NOT FOUND",strlen("COMMAND NOT FOUND"),0xff0000,0,1,0);
+        drawString(0,SCREEN_HEIGHT-BASE_CHAR_HEIGHT*2,"COMMAND NOT FOUND",18,0xff0000,0,1,0);
       }
     } else if (buff[i] == '\b') {
       if (lineCursor > 0) {
