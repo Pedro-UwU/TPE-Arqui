@@ -3,15 +3,15 @@
 static char *figures[PIECES_AMOUNT]={"king","queen","bishop","knight","rook","pawn"};
 
 static int board[SQUARES][SQUARES] ={
-    {5,4,3,2,1,3,4,5},
+    {5,4,3,1,2,3,4,5},
     {6,6,6,6,6,6,6,6},
     {0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0},
     {-6,-6,-6,-6,-6,-6,-6,-6},
-    {-5,-4,-3,-1,-2,-3,-4,-5}
-    };;
+    {-5,-4,-3,-2,-1,-3,-4,-5}
+    };
 
 static char pieces[PIECES_AMOUNT][PIECES_SIZE][PIECES_SIZE] = {
     {
@@ -80,6 +80,8 @@ static int secondsV[3]={0,0,0};
 static int turn = 1;
 static int oldGame = 0;
 static char buffer[TOTAL_LINES_CHESS][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2] = {{0}};
+static int rotate=0;
+static int castleMove[2][3]={{0,0,0},{0,0,0}};
 
 static void loadColorsPieces(uint64_t pieceC[][PIECES_SIZE],int j);
 static void console();
@@ -96,6 +98,7 @@ static int pawnValidMov(int xi,int yi,int xf, int yf);
 static int knightValidMov(int xi,int yi,int xf, int yf);
 static int validMovement(int xi,int yi,int xf, int yf);
 static void internTimer();
+static void turnBoard();
 
 void chess(){
     clearScreen(0x800000);
@@ -105,20 +108,26 @@ void chess(){
         secondsV[1]=0;
         secondsV[2]=readSeconds(); //lleva el tiempo eliminar si se  implementa timer tic
         turn =1;
+        rotate = 0;
+        for (int i =0;i<2;i++){
+            for (int j = 0;j<3;j++){
+                castleMove[i][j]=0;
+            }
+        }
         for  (int i = 0;i  < TOTAL_LINES_CHESS;i++){
             for  (int j =0 ;j<CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2;j++){
                 buffer[i][j]=0;
             }
         }
         int newboard[SQUARES][SQUARES] = {
-            {5,4,3,2,1,3,4,5},
+            {5,4,3,1,2,3,4,5},
             {6,6,6,6,6,6,6,6},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {-6,-6,-6,-6,-6,-6,-6,-6},
-            {-5,-4,-3,-1,-2,-3,-4,-5}
+            {-5,-4,-3,-2,-1,-3,-4,-5}
         };
         for (int i = 0; i < SQUARES; i++){
             for (int j = 0; j < SQUARES; j++){
@@ -127,29 +136,14 @@ void chess(){
         }
     }
     clearScreen(0x800000);
-    
-    int x =SCREEN_WIDTH/2-BOARDDIM/2;
-    int y= BOARDDIM/8;
-    //indices
-    int movx = x;
-    int movy = y - BASE_CHAR_HEIGHT*2;
-    movx+=SQUAREDIM/2-BASE_CHAR_WIDTH/2;
-    char indixL[SQUARES+1] = "ABCDEFGH";
-    for (int i = 0; i < SQUARES; i++){
-        drawString(movx,movy,indixL+i,1,0xffffff,0,2,1);
-        movx+=SQUAREDIM;
-    }
-    movx = x- BASE_CHAR_WIDTH*3;
-    movy = y + SQUAREDIM/2-BASE_CHAR_HEIGHT/2;
-    char indixN[SQUARES+1] = "12345678";
-    for (int i = 0; i < SQUARES; i++){
-        drawString(movx,movy,indixN+i,1,0xffffff,0,2,1);
-        movy+=SQUAREDIM;
-    }
     drawString(PLAYER_12_PLACE_X,PLAYER_1_PLACE_Y,"Player 1",strlen("player 1"),0xffffff,0x000000,2,1);
     drawString(PLAYER_12_PLACE_X,PLAYER_2_PLACE_Y,"Player 2",strlen("player 2"),0xffffff,0x000000,2,1);
     
     console();
+}
+
+static void turnBoard(){
+    rotate= (rotate+1)%4; //si rotate es par van las letras arriba y los numeros de costado
 }
 
 static int playAgain(){
@@ -187,13 +181,63 @@ static void drawBoard(){
                 }
         }
     }
+    int startT,endT,startL,endL,stepT,stepL;
+    switch (rotate) {
+    case 0:
+        startT=startL=0;
+        endL=endT=7;
+        stepL=stepT=1;
+        break;
+    case 1:
+        endL=startT=0;
+        endT=startL=7;
+        stepT=1;
+        stepL=-1;
+        break;
+    case 2:
+        startT=startL=7;
+        endT=endL=0;
+        stepT=stepL=-1;
+        break;
+    case 3:
+        startL=endT=0;
+        endL=startT=7;
+        stepL=1;
+        stepT=-1;
+        break;
+    }
+    //indices cambiar squares con otro indice
+    movx = x+SQUAREDIM/2-BASE_CHAR_WIDTH/2;
+    movy = y - BASE_CHAR_HEIGHT*2;
+    char indix[2][SQUARES+1] = {{"ABCDEFGH"},{"12345678"}};
+    for (int i = 0,t = startT; i < SQUARES; i++,t+=stepT){
+        drawString(movx,movy,indix[rotate%2]+t,1,0xffffff,0x800000,2,0);
+        movx+=SQUAREDIM;
+    }
+    movx = x- BASE_CHAR_WIDTH*3;
+    movy = y + SQUAREDIM/2-BASE_CHAR_HEIGHT/2;
+    for (int i = 0,l =startL; i < SQUARES; i++,  l+=stepL){
+        drawString(movx,movy,indix[(rotate+1)%2]+l,1,0xffffff,0x800000,2,0);
+        movy+=SQUAREDIM;
+    }
     movy=y;
     movx=x;
-    for (int i = 0; i < SQUARES; movy+=SQUAREDIM, movx= x ,i++){
-        for (int j = 0; j < SQUARES; movx+=SQUAREDIM,j++){
-            if (board[i][j]!=0){
-                loadColorsPieces(colorPieces,board[i][j]);
-                drawMatrix(movx,movy,colorPieces[0],PIECES_SIZE,PIECES_SIZE,SQUAREDIM/PIECES_SIZE);
+    if (rotate==0||rotate==2){
+        for (int i = 0,t=startT; i < SQUARES; movy+=SQUAREDIM, movx= x ,i++,t+=stepT){
+            for (int j = 0,l=startL; j < SQUARES; movx+=SQUAREDIM,j++, l+=stepL){
+                if (board[t][l]!=0){
+                    loadColorsPieces(colorPieces,board[t][l]);
+                    drawMatrix(movx,movy,colorPieces[0],PIECES_SIZE,PIECES_SIZE,SQUAREDIM/PIECES_SIZE);
+                }
+            }
+        }
+    } else { 
+        for (int i = 0,t=endT; i < SQUARES; movy+=SQUAREDIM, movx= x ,i++,t-=stepT){
+            for (int j = 0,l=endL; j < SQUARES; movx+=SQUAREDIM,j++, l-=stepL){
+                if (board[l][t]!=0){
+                    loadColorsPieces(colorPieces,board[l][t]);
+                    drawMatrix(movx,movy,colorPieces[0],PIECES_SIZE,PIECES_SIZE,SQUAREDIM/PIECES_SIZE);
+                }
             }
         }
     }
@@ -265,15 +309,25 @@ static int knightValidMov(int xi,int yi,int xf, int yf){
 }
 
 static int pawnValidMov(int xi,int yi,int xf, int yf){
-    if ((xi-xf)>1 || fabs(yi-yf)>1) return 0;
+    if (fabs(xi-xf)>1 || fabs(yi-yf)>2) return 0;
     if (board[yf][xf]==0 && xi-xf!=0) return 0;
     if (board[yf][xf]!=0 && xi-xf==0) return 0;
     if (board[yi][xi]>0) {
+        if (board[yf][xf]==0 && yf-yi==2 && yi==1) return 1;
         if (yf-yi!=1) return 0;
     } else if (board[yi][xi]< 0){
+        if  (board[yf][xf]==0 && yf-yi==-2 && yi==6)return 1;
         if (yf-yi!=-1) return 0;
     }
+    if (fabs(yi-yf)==2){
+        
+    }
+    
     return 1;
+}
+
+static int commandDecoder(){
+
 }
 
 static int validMovement(int xi,int yi,int xf, int yf){
@@ -329,16 +383,15 @@ static void internTimer(){
 static void console(){
     reDrawChessConsole(buffer);
     drawBoard();
-    drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,(9)*BASE_CHAR_HEIGHT,0x000000);
     int movx = 7*BASE_CHAR_WIDTH+CONSOLE_LIMIT_X;
     int l=0;
     while (1){
         internTimer();
         if (secondsV[1]-secondsV[0]>60 || secondsV[1]>3600){
-            endGame(1);
+            endGame(2);
             break;
         } else if (secondsV[0]-secondsV[1]>60 || secondsV[0]>3600){
-            endGame(2);
+            endGame(1);
             break;
         }
         
@@ -348,39 +401,119 @@ static void console(){
             buf[i] = 0;
         }
         if (readKeyboard(buf, bufferLength)) {
+            drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,(9)*BASE_CHAR_HEIGHT,0x000000);
             if (buf[0]=='x') {
                 oldGame =1;
                 break;
-            } 
-            if (buf[0]=='\n' || l > MAX_LENGTH){
+            }
+            if (buf[0]=='`'){
+                turnBoard();
+                drawBoard();
+            } else if (buf[0]=='\n' || l > MAX_LENGTH){
                 l=0;
-                int xi = buffer[turn][0]-'a';
-                int yi = buffer[turn][1]-'0'-1;
-                int xf =buffer[turn][6]-'a';
-                int yf = buffer[turn][7]-'0'-1;
-                if (validMovement(xi,yi,xf,yf) ){
-                    if (board[yf][xf]){
-                        drawString(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(board[yi][xi])-1],strlen(figures[fabs(board[yi][xi])-1]),0xffffff,0x000000,1,0);
-                        drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yi][xi])-1]))*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT," eats ",6,0xffffff,0x000000,1,0);     
-                        drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yi][xi])-1])+6)*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(board[yf][xf])-1],strlen(figures[fabs(board[yf][xf])-1]),0xffffff,0x000000,1,0);
+                if (!strcmp("castle r",buffer[turn])){
+                    if (turn%2){ //turno de blancas
+                        if (castleMove[turn%2][0]==0 && castleMove[turn%2][1]==0){
+                            if (board[7][5]==0 && board[7][6]==0){
+                                board[7][6]=board[7][4];
+                                board[7][4]=0;
+                                board[7][5]=board[7][7];
+                                board[7][7]=0;
+                                castleMove[turn%2][0]=1;
+                                drawBoard();
+                                turn=(turn+1)%TOTAL_LINES_CHESS;
+                                reDrawChessConsole(buffer);
+                            }
+                        } // castlemove == 0 el rey no se movio
+                    } else {
+                        if (castleMove[turn%2][0]==0 && castleMove[turn%2][1]==0){
+                            if (board[0][1]==0 && board[0][2]==0){
+                                board[0][1]=board[0][3];
+                                board[0][3]=0;
+                                board[0][2]=board[0][0];
+                                board[0][0]=0;
+                                castleMove[turn%2][0]=1;
+                                drawBoard();
+                                turn=(turn+1)%TOTAL_LINES_CHESS;
+                                reDrawChessConsole(buffer);
+                            }
+                        }
                     }
-                    if (fabs(board[yf][xf])==KING) {
-                        endGame((turn)%2+1);
-                        break;
+                }else if(!strcmp("castle l",buffer[turn])){
+                    if (turn%2){
+                        if (castleMove[turn%2][0]==0 && castleMove[turn%2][2]==0){
+                            if (board[7][2]==0 && board[7][1]==0 && board[7][3]==0){
+                                board[7][2]=board[7][4];
+                                board[7][4]=0;
+                                board[7][3]=board[7][0];
+                                board[7][0]=0;
+                                castleMove[turn%2][0]=1;
+                                drawBoard();
+                                turn=(turn+1)%TOTAL_LINES_CHESS;
+                                reDrawChessConsole(buffer);
+                            }
+                        }
+                    } else {
+                        if (castleMove[turn%2][0]==0 && castleMove[turn%2][2]==0){
+                            if (board[0][6]==0 && board[0][5]==0 && board[0][4]==0){
+                                board[0][5]=board[0][3];
+                                board[0][3]=0;
+                                board[0][4]=board[0][7];
+                                board[0][7]=0;
+                                castleMove[turn%2][0]=1;
+                                drawBoard();
+                                turn=(turn+1)%TOTAL_LINES_CHESS;
+                                reDrawChessConsole(buffer);
+                            }
+                        }
                     }
-                    board[yf][xf]= board[yi][xi];
-                    board[yi][xi] = 0;
-                    drawBoard();
-                    if((board[yf][xf]==6 && yf==7) || (board[yf][xf] == -6 && yf==0)){
-                        promotePiece(xf,yf);
+                }else{
+                    int xi = buffer[turn][0]-'a';
+                    int yi = buffer[turn][1]-'0'-1;
+                    int xf =buffer[turn][6]-'a';
+                    int yf = buffer[turn][7]-'0'-1;
+                    if (validMovement(xi,yi,xf,yf) ){
+                        if(fabs(board[yi][xi])==KING){
+                            castleMove[turn%2][0]=1;
+                        }else if ((board[yi,xi])==ROOK){
+                            if(xi==7){
+                                castleMove[turn%2][2]=1;
+                            } else{
+                                castleMove[turn%2][1]=1;
+                            }
+                        }else if(board[yi][xi]==-ROOK){
+                            if(xi==7){
+                                castleMove[turn%2][1]=1;
+                            } else{
+                                castleMove[turn%2][2]=1;
+                            }
+                        }
+                        if (board[yf][xf]){
+                            drawString(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(board[yi][xi])-1],strlen(figures[fabs(board[yi][xi])-1]),0xffffff,0x000000,1,0);
+                            drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yi][xi])-1]))*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT," eats ",6,0xffffff,0x000000,1,0);     
+                            drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yi][xi])-1])+6)*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(board[yf][xf])-1],strlen(figures[fabs(board[yf][xf])-1]),0xffffff,0x000000,1,0);
+                        }
+                        if (fabs(board[yf][xf])==KING) {
+                            endGame((turn+1)%2+1);
+                            break;
+                        }
+                        board[yf][xf]= board[yi][xi];
+                        board[yi][xi] = 0;
                         drawBoard();
+                        if((board[yf][xf]==6 && yf==7) || (board[yf][xf] == -6 && yf==0)){
+                            promotePiece(xf,yf);
+                            drawBoard();
+                        }
+                        turn=(turn+1)%TOTAL_LINES_CHESS;
+                        reDrawChessConsole(buffer);
+                    } else {
+                        drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,(9)*BASE_CHAR_HEIGHT,0x000000);
+                        drawString(CONSOLE_LIMIT_X,MOVEMENT,"UNVALID MOVEMENT",17,0xffffff,0,1,0);
+                        for (int i=0;i<CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2;i++) {
+                            buffer[turn][i]=0;
+                        }
+                        reDrawChessConsole(buffer);
                     }
-                    turn=(turn+1)%TOTAL_LINES_CHESS;
-                    reDrawChessConsole(buffer);
-                } else {
-                    drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,(9)*BASE_CHAR_HEIGHT,0x000000);
-                    drawString(CONSOLE_LIMIT_X,MOVEMENT,"UNVALID MOVEMENT",17,0xffffff,0,1,0);
-                    for (int i=0;i<CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2;i++) buffer[turn][i]=0;
                 }
             } else if (buf[0]=='\b'){
                 if (l>0){
