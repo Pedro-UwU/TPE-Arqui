@@ -467,53 +467,52 @@ static void console(){
                             }
                         }
                     }
-                }else{
-                    int xi = buffer[turn][0]-'a';
-                    int yi = buffer[turn][1]-'0'-1;
-                    int xf =buffer[turn][6]-'a';
-                    int yf = buffer[turn][7]-'0'-1;
-                    if (validMovement(xi,yi,xf,yf) ){
-                        if(fabs(board[yi][xi])==KING){
-                            castleMove[turn%2][0]=1;
-                        }else if ((board[yi,xi])==ROOK){
-                            if(xi==7){
-                                castleMove[turn%2][2]=1;
-                            } else{
-                                castleMove[turn%2][1]=1;
-                            }
-                        }else if(board[yi][xi]==-ROOK){
-                            if(xi==7){
-                                castleMove[turn%2][1]=1;
-                            } else{
-                                castleMove[turn%2][2]=1;
-                            }
+                }
+                int xi = buffer[turn][0]-'a';
+                int yi = buffer[turn][1]-'0'-1;
+                int xf =buffer[turn][6]-'a';
+                int yf = buffer[turn][7]-'0'-1;
+                if (validMovement(xi,yi,xf,yf) ){
+                    if(fabs(board[yi][xi])==KING){
+                        castleMove[turn%2][0]=1;
+                    }else if ((board[yi,xi])==ROOK){
+                        if(xi==7){
+                            castleMove[turn%2][2]=1;
+                        } else{
+                            castleMove[turn%2][1]=1;
                         }
-                        if (board[yf][xf]){
-                            drawString(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(board[yi][xi])-1],strlen(figures[fabs(board[yi][xi])-1]),0xffffff,0x000000,1,0);
-                            drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yi][xi])-1]))*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT," eats ",6,0xffffff,0x000000,1,0);     
-                            drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yi][xi])-1])+6)*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(board[yf][xf])-1],strlen(figures[fabs(board[yf][xf])-1]),0xffffff,0x000000,1,0);
+                    }else if(board[yi][xi]==-ROOK){
+                        if(xi==7){
+                            castleMove[turn%2][1]=1;
+                        } else{
+                            castleMove[turn%2][2]=1;
                         }
-                        if (fabs(board[yf][xf])==KING) {
-                            endGame((turn+1)%2+1);
-                            break;
-                        }
-                        board[yf][xf]= board[yi][xi];
-                        board[yi][xi] = 0;
-                        drawBoard();
-                        if((board[yf][xf]==6 && yf==7) || (board[yf][xf] == -6 && yf==0)){
-                            promotePiece(xf,yf);
-                            drawBoard();
-                        }
-                        turn=(turn+1)%TOTAL_LINES_CHESS;
-                        reDrawChessConsole(buffer);
-                    } else {
-                        drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,(9)*BASE_CHAR_HEIGHT,0x000000);
-                        drawString(CONSOLE_LIMIT_X,MOVEMENT,"UNVALID MOVEMENT",17,0xffffff,0,1,0);
-                        for (int i=0;i<CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2;i++) {
-                            buffer[turn][i]=0;
-                        }
-                        reDrawChessConsole(buffer);
                     }
+                    if (board[yf][xf]){
+                        drawString(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(board[yi][xi])-1],strlen(figures[fabs(board[yi][xi])-1]),0xffffff,0x000000,1,0);
+                        drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yi][xi])-1]))*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT," eats ",6,0xffffff,0x000000,1,0);     
+                        drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yi][xi])-1])+6)*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(board[yf][xf])-1],strlen(figures[fabs(board[yf][xf])-1]),0xffffff,0x000000,1,0);
+                    }
+                    if (fabs(board[yf][xf])==KING) {
+                        endGame((turn+1)%2+1);
+                        break;
+                    }
+                    board[yf][xf]= board[yi][xi];
+                    board[yi][xi] = 0;
+                    drawBoard();
+                    if((board[yf][xf]==6 && yf==7) || (board[yf][xf] == -6 && yf==0)){
+                        promotePiece(xf,yf);
+                        drawBoard();
+                    }
+                    turn=(turn+1)%TOTAL_LINES_CHESS;
+                    reDrawChessConsole(buffer);
+                } else {
+                    drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,(9)*BASE_CHAR_HEIGHT,0x000000);
+                    drawString(CONSOLE_LIMIT_X,MOVEMENT,"UNVALID MOVEMENT",17,0xffffff,0,1,0);
+                    for (int i=0;i<CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2;i++) {
+                        buffer[turn][i]=0;
+                    }
+                    reDrawChessConsole(buffer);
                 }
             } else if (buf[0]=='\b'){
                 if (l>0){
