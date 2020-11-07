@@ -85,6 +85,11 @@ void syscallHandler(registerStruct * registers) {
     //rdi -> puntero a int para devolver si hay algo
     bufferEmpty((uint64_t *) registers->rdi);
     break;
+
+    case 12: //addKeyPressedFunction
+    //rdi -> puntero a funcion
+    addKeyPressedFunction(registers->rdi);
+    break;
   }
 }
 

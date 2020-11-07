@@ -6,6 +6,7 @@ GLOBAL drawRectSyscall
 GLOBAL getTimeSyscall
 GLOBAL getRegisters
 GLOBAL drawMatrixSyscall
+GLOBAL setKeyPressedFunctionSyscall
 
 section .text
 
@@ -96,6 +97,17 @@ getRegisters:
   mov rbp, rsp
 
   mov rax, 9
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+setKeyPressedFunctionSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 12
   int 80h
 
   mov rsp, rbp
