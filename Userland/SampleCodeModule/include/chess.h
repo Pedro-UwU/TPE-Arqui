@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <timer.h>
+#include <colors.h>
 
 void chess();
 
@@ -24,7 +25,7 @@ void chess();
 #define PIECES_SIZE 8
 #define PIECES_AMOUNT 6
 
-#define BACKGROUND 0xC0C0C0
+#define BACKGROUND MAROON
 
 #define CONSOLE_LIMIT_X SCREEN_WIDTH/2+BOARDDIM/2+SQUAREDIM/2
 #define CONSOLE_LIMIT_Y SQUAREDIM
