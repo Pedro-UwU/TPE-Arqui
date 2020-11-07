@@ -18,7 +18,7 @@ static char std_io_initialized = 0;
 void (*setKeyPressedPointer)(uint8_t);
 uint8_t funcPointerInitialized = 0;
 
-char lastCharReaded = 0;
+static char lastCharReaded;
 
 void stdio_init() {
   if (!std_io_initialized) { //para no inicializarlo 2 veces
@@ -39,7 +39,15 @@ char * getSTD_OUTAddress() {
   return std_out;
 }
 
-int scanf(char * fmt, ...);
+void scan(char * buff) {
+  lastCharReaded = 0;
+  char ch = getChar();
+  int index = 0;
+  while (ch != '\n' && ch != 0) {
+    buff[index++] = ch;
+    ch = getChar();
+  }
+}
 
 int printf(char * fmt, ...);
 
@@ -74,6 +82,7 @@ void setKeyPressedFunction(void (*f)(uint8_t)) {
 
 void keyPressedStdIO(uint8_t keyCode) {
   char c = getAsciiFromKeyCode(keyCode);
+  //lastCharReaded = 't';
   if (c != 0) {
     lastCharReaded = c;
   }
@@ -82,8 +91,7 @@ void keyPressedStdIO(uint8_t keyCode) {
 }
 
 char getChar() {
-  lastCharReaded = 0; //Borro lo que tenia antes
-  while(lastCharReaded == 0) {};
+  while(lastCharReaded == 0) {}; //Aca espero a la interrupcion
   return lastCharReaded;
 }
 

@@ -3,5 +3,5 @@
 #include <stdint.h>
 
 void init_shell();
-
+void writeToLines(char * buff, int dim);
 #endif

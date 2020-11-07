@@ -9,6 +9,7 @@
 void stdio_init();
 char * getSTD_INAddress();
 char * getSTD_OUTAddress();
+void scan(char *);
 int scanf(char * fmt, ...);
 int printf(char * fmt, ...);
 void writeInStream(char stream, char * str, int size);

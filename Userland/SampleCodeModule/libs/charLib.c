@@ -4,6 +4,7 @@
 #define TOTAL_KEYS 59
 
 #include <stdint.h>
+#include <syscallsASM.h>
 
 static char pressCodes[][2] = {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'}, {'3', '#'}, {'4', '$'}, {'5', '%'}, {'6', '^'}, {'7', '&'},
 {'8', '*'}, {'9', '('}, {'0', ')'}, {'-', '_'}, {'=', '+'}, {'\b', '\b'}, {'\t', '\t'}, {'q', 'Q'}, {'w', 'W'}, {'e', 'E'}, {'r', 'R'},
@@ -14,8 +15,8 @@ static char pressCodes[][2] = {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'}, {'3', '#'
 
 char getAsciiFromKeyCode(uint8_t keyCode) {
   if (keyCode < TOTAL_KEYS) {
-    // uint8_t mayus = isMayus(); // <- esta es una syscall que le pregunta al teclado si las teclas de mayus estan apretadas
-    return pressCodes[keyCode][0];
+    uint8_t mayus = isMayusSyscall(); // <- esta es una syscall que le pregunta al teclado si las teclas de mayus estan apretadas
+    return pressCodes[keyCode][mayus];
   }
   return 0;
 }

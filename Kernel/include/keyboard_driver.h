@@ -19,5 +19,5 @@ uint8_t readKeyboard(char * buff, uint8_t size);
 registerStruct * getRegisters();
 void bufferEmpty(uint64_t * target);
 void addKeyPressedFunction(void (*func)(uint8_t));
-
+void isMayus(uint64_t * target);
 #endif

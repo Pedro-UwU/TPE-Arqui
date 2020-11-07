@@ -9,9 +9,11 @@
 #include <stdint.h>
 #include <colors.h>
 #include <commands.h>
+#include <Shell.h>
 #include <stdlib.h>
 #include <chess.h>
 #include <timer.h>
+#include <charLib.h>
 
 static char finished = 0;
 static char * stdIn;
@@ -23,7 +25,6 @@ static uint8_t lineCursor = 0;
 static uint8_t currentLineNumber = 0;
 
 static void readKey();
-static void writeToLines(char * buff, int dim);
 static void addLine();
 static void drawShellLines();
 static void clearShellLine(uint8_t line);
@@ -44,7 +45,7 @@ void init_shell() {
   drawShellLines();
 
   while(!finished) {
-    readKey();
+    //readKey();
   }
 }
 
@@ -59,7 +60,7 @@ static void readKey() {
   }
 }
 
-static void writeToLines(char * buff, int dim) {
+void writeToLines(char * buff, int dim) {
   for (int i = 0; i < dim && buff[i] != 0 && i < MAX_LINE_LENGTH; i++) {
     if (buff[i] == '\n' || lineCursor == (MAX_LINE_LENGTH - 1)) { //El -1 es para que el ultimo elemento sea un 0
       addLine();
@@ -140,7 +141,10 @@ static int isCommand(){
 
 void keyPressedShell(uint8_t keyCode) {
   char c = getChar();
-  writeToLines(&c, 1);
+  //c = getAsciiFromKeyCode(c);
+  //readKey();
+  if (c)
+    writeToLines(&c, 1);
 }
 
 #endif

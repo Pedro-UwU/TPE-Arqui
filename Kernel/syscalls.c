@@ -90,6 +90,11 @@ void syscallHandler(registerStruct * registers) {
     //rdi -> puntero a funcion
     addKeyPressedFunction(registers->rdi);
     break;
+
+    case 13: //isMayus
+    //rdi -> puntero a int
+    isMayus((uint64_t *)registers->rdi);
+    break;
   }
 }
 

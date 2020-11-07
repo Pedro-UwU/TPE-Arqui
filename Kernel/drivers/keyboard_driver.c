@@ -41,6 +41,9 @@ void keyboardHandler(registerStruct * registers) {
 
   else if (keyCode < KEYS) { //Si es una tecla presionada
     uint8_t mayus = (shiftL | shiftR);
+    if (keyPressedExists) {
+      keyPressedFunction_driver(keyCode);
+    }
     BUFFER[(endIndex++)%BUFFER_SIZE] = pressCodes[keyCode][mayus];
   }
 
@@ -63,5 +66,9 @@ void bufferEmpty(uint64_t * target) {
 void addKeyPressedFunction(void (*func)(uint8_t)){
   keyPressedExists = 1;
   keyPressedFunction_driver = func;
+}
+
+void isMayus(uint64_t * target) {
+  *target = (shiftL || shiftR);
 }
 #endif
