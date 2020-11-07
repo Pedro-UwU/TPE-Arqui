@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <syscallsASM.h>
 #include <charLib.h>
-
+#include <stdlib.h>
 
 #include <stdGraphics.h>
 
@@ -17,6 +17,11 @@ char * std_out;
 static char std_io_initialized = 0;
 void (*setKeyPressedPointer)(uint8_t);
 uint8_t funcPointerInitialized = 0;
+
+void (*updateConsolePointer)(char *, int);
+uint8_t updateConsoleInitialized = 0;
+
+
 
 static char lastCharReaded;
 
@@ -39,17 +44,22 @@ char * getSTD_OUTAddress() {
   return std_out;
 }
 
-void scan(char * buff) {
-  lastCharReaded = 0;
-  char ch = getChar();
-  int index = 0;
-  while (ch != '\n' && ch != 0) {
-    buff[index++] = ch;
-    ch = getChar();
-  }
-}
+// void scan(char * buff) {
+//   char ch = 0;
+//   int index = 0;
+//   while (ch != '\n') {
+//     if (ch)
+//       buff[index++] = ch;
+//     ch = getChar();
+//     print("ASA");
+//   }
+//   print("TERMINO\n");
+// }
 
-int printf(char * fmt, ...);
+void print(char * buff) {
+  int len = strlen(buff);
+  updateConsolePointer(buff, len);
+}
 
 void writeInStream(char stream, char * str, int size) {
   char * buffer;
@@ -80,18 +90,24 @@ void setKeyPressedFunction(void (*f)(uint8_t)) {
   funcPointerInitialized = 1;
 }
 
+void setConsoleUpdateFunction(void (*f)(char *, int)) {
+  updateConsolePointer = f;
+  updateConsoleInitialized = 1;
+}
+
+
+
+
 void keyPressedStdIO(uint8_t keyCode) {
   char c = getAsciiFromKeyCode(keyCode);
-  //lastCharReaded = 't';
-  if (c != 0) {
+  if (c) {
     lastCharReaded = c;
   }
-  if (funcPointerInitialized)
+  if (funcPointerInitialized) {}
     setKeyPressedPointer(keyCode);
 }
 
 char getChar() {
-  while(lastCharReaded == 0) {}; //Aca espero a la interrupcion
   return lastCharReaded;
 }
 

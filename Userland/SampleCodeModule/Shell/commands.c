@@ -8,9 +8,7 @@
 #include <stdint.h>
 
 void test(){
-    char buff[100] = {0};
-    buff[0] = getChar();
-    writeToLines(buff, 100);
+  print("TEST\n");
 }
 
 void inforeg(){

@@ -15,7 +15,8 @@ static char pressCodes[][2] = {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'}, {'3', '#'
 
 char getAsciiFromKeyCode(uint8_t keyCode) {
   if (keyCode < TOTAL_KEYS) {
-    uint8_t mayus = isMayusSyscall(); // <- esta es una syscall que le pregunta al teclado si las teclas de mayus estan apretadas
+    uint64_t mayus = 0;
+    //isMayusSyscall(&mayus); // <- esta es una syscall que le pregunta al teclado si las teclas de mayus estan apretadas
     return pressCodes[keyCode][mayus];
   }
   return 0;

@@ -33,6 +33,7 @@ static void clearScreenLine(uint8_t line);
 static void exeCommand(int i);
 static int isCommand();
 void keyPressedShell(uint8_t keyCode);
+void updateShell(char * buff, int dim);
 
 char commandsNames[5][10]={"timer","test","inforeg","chess"};
 void  (* run[])(int,char * * ) = {timer,test,inforeg,chess};
@@ -41,11 +42,12 @@ void init_shell() {
   stdIn = getSTD_INAddress();
   stdOut = getSTD_OUTAddress();
   setKeyPressedFunction(keyPressedShell);
+  setConsoleUpdateFunction(updateShell);
   //readKey();
   drawShellLines();
 
   while(!finished) {
-    //readKey();
+
   }
 }
 
@@ -81,7 +83,7 @@ void writeToLines(char * buff, int dim) {
       lineCursor++;
     }
   }
-  drawBottomLine();
+  //drawBottomLine();
 }
 
 static void addLine() {
@@ -140,11 +142,16 @@ static int isCommand(){
 }
 
 void keyPressedShell(uint8_t keyCode) {
-  char c = getChar();
-  //c = getAsciiFromKeyCode(c);
-  //readKey();
-  if (c)
+  char c = getAsciiFromKeyCode(keyCode);
+  if (c) {
     writeToLines(&c, 1);
+    drawBottomLine();
+  }
+}
+
+void updateShell(char * buff, int dim) {
+  writeToLines(buff, dim);
+  drawShellLines();
 }
 
 #endif
