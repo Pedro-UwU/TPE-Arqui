@@ -59,5 +59,9 @@ int readKeyboard(char * buffer, int size) {
   return 0;
 }
 
+void setKeyPressedFunction(void (*f)(uint8_t)) {
+  setKeyPressedFunctionSyscall(f);
+}
+
 
 #endif
