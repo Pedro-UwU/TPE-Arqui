@@ -5,13 +5,20 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <syscallsASM.h>
+#include <charLib.h>
 
 
 #include <stdGraphics.h>
 
+void keyPressedStdIO(uint8_t keyCode);
+
 char * std_in;
 char * std_out;
 static char std_io_initialized = 0;
+void (*setKeyPressedPointer)(uint8_t);
+uint8_t funcPointerInitialized = 0;
+
+char lastCharReaded = 0;
 
 void stdio_init() {
   if (!std_io_initialized) { //para no inicializarlo 2 veces
@@ -21,6 +28,7 @@ void stdio_init() {
     std_out = buffer2;
     std_io_initialized = 1;
   }
+  setKeyPressedFunctionSyscall(keyPressedStdIO);
 }
 
 char * getSTD_INAddress() {
@@ -60,7 +68,23 @@ int readKeyboard(char * buffer, int size) {
 }
 
 void setKeyPressedFunction(void (*f)(uint8_t)) {
-  setKeyPressedFunctionSyscall(f);
+  setKeyPressedPointer = f;
+  funcPointerInitialized = 1;
+}
+
+void keyPressedStdIO(uint8_t keyCode) {
+  char c = getAsciiFromKeyCode(keyCode);
+  if (c != 0) {
+    lastCharReaded = c;
+  }
+  if (funcPointerInitialized)
+    setKeyPressedPointer(keyCode);
+}
+
+char getChar() {
+  lastCharReaded = 0; //Borro lo que tenia antes
+  while(lastCharReaded == 0) {};
+  return lastCharReaded;
 }
 
 

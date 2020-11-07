@@ -139,7 +139,8 @@ static int isCommand(){
 }
 
 void keyPressedShell(uint8_t keyCode) {
-  readKey();
+  char c = getChar();
+  writeToLines(&c, 1);
 }
 
 #endif

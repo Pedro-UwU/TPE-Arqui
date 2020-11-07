@@ -14,5 +14,5 @@ int printf(char * fmt, ...);
 void writeInStream(char stream, char * str, int size);
 int readKeyboard(char * buffer, int size);
 void setKeyPressedFunction(void (*)(uint8_t));
-
+char getChar();
 #endif
