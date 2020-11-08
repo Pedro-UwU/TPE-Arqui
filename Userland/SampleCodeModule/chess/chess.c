@@ -83,6 +83,7 @@ static char buffer[TOTAL_LINES_CHESS][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2] = {{0}};
 static int rotate=0;
 static int castleMove[2][3]={{0,0,0},{0,0,0}};
 static int xyPassant[3]={-1,-1,-1};
+static int lastEat =1;
 
 static void loadColorsPieces(uint64_t pieceC[][PIECES_SIZE],int j);
 static void console();
@@ -119,6 +120,7 @@ void chess(){
         secondsV[2]=readSeconds();
         turn =1;
         rotate = 0;
+        lastEat =turn;
         for (int i =0;i<2;i++){
             for (int j = 0;j<3;j++){
                 castleMove[i][j]=0;
@@ -570,15 +572,18 @@ static void console(){
                             }
                             xyPassant[0]=xyPassant[1]=xyPassant[2]=-1;
                         }
-                        if(fabs(board[yi][xi])==KING){
+                        if (aux){
+                            lastEat=turn;
+                        }
+                        if(fabs(board[yf][xf])==KING){
                             castleMove[turn%2][0]=1;
-                        }else if ((board[yi][xi])==ROOK){
+                        }else if ((board[yf][xf])==ROOK){
                             if(xi==7){
                                 castleMove[turn%2][2]=1;
                             } else{
                                 castleMove[turn%2][2]=1;
                             }
-                        }else if(board[yi][xi]==-ROOK){
+                        }else if(board[yf][xf]==-ROOK){
                             if(xi==7){
                                 castleMove[turn%2][1]=1;
                             } else{
@@ -624,6 +629,10 @@ static void console(){
             }else {
                 drawString(movx+l*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,buf,1,WHITE,BLACK,1,0);
                 buffer[turn][l++] = buf[0];
+            }
+            if (fabs(lastEat-turn)>=50){
+                endGame(0,4);
+                break;
             }
             if (noMoreMoves()){
                 endGame(0,3);
@@ -723,6 +732,8 @@ static void endGame(int winner, int by){
         case 3:
             drawString(SCREEN_WIDTH/2-14*3*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*2-2*BASE_CHAR_HEIGHT,"TOP AMOUNT OF MOVES REACHED",28,BACKGROUND,BLACK,3,1);
             break;
+        case 4:
+            drawString(SCREEN_WIDTH/2-15*3*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*2-2*BASE_CHAR_HEIGHT,"50 MOVES REACHED WHITOUT EATS",30,BACKGROUND,BLACK,3,1);
         default:
             break;
         }
