@@ -758,6 +758,7 @@ static void endGame(int winner, int by){
                     drawFullConsole(2);
                 } else {
                     drawFullConsole(1);
+                    endGame(winner,by);
                 }
                 return;
             } else if( buf[0]=='M'){
