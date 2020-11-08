@@ -16,7 +16,7 @@ int readMinutes(){
 
 int readHours(){
   int ans;
-  getTimeSyscall(2,&ans);
+  getTimeSyscall(2,(uint8_t*)&ans);
   ans = ((int)ans-3)%24;
   return (ans);
 }

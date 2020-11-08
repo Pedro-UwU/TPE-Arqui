@@ -21,15 +21,20 @@ void saveRegisters(registerStruct * registers) {
   registerSnapshot.rcx = registers->rcx;
   registerSnapshot.rbx = registers->rbx;
   registerSnapshot.rax = registers->rax;
-  registerSnapshot.rsp = registers->rsp;
   registerSnapshot.rip = registers->rip;
+  registerSnapshot.cs = registers->cs;
+  registerSnapshot.flags = registers->flags;
+  registerSnapshot.rsp = registers->rsp;
 }
 
-registerStruct * getRegisters() {
-  return &registerSnapshot;
+void getRegisters(uint64_t * arr) {
+  uint64_t * regArr = (uint64_t *)&registerSnapshot;
+  for (int i = 0; i < TOTAL_REGISTERS; i++) {
+    arr[i] = regArr[i];
+  }
 }
 
-void get32bytesFromAddress(uint64_t address, uint8_t * target, uint8_t totalBytes) {
+void get32bytesFromAddress(uint64_t address, uint64_t * target, uint8_t totalBytes) {
   uint64_t * pos = (uint64_t *) address;
   for (uint8_t i = 0; i < totalBytes; i++) {
     target[i] = pos[i];

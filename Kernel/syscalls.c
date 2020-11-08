@@ -53,15 +53,8 @@ void syscallHandler(registerStruct * registers) {
       break;
     case 6:
     // rdi xi, rsi yi, rdx puntero a matriz, rcx width, r8 height , r9 size
-      drawMatrix((uint64_t) registers->rdi,(uint64_t) registers->rsi,(uint64_t *) registers->rdx,(uint64_t) registers->rcx,(uint64_t) registers->r8,(uint64_t) registers->r9);
-      break;
-
-
-    //
-    //case 1: writeSTR
-    //case 2: getDate
-    //case 4: getMillis (?)
-
+    drawMatrix((uint64_t) registers->rdi,(uint64_t) registers->rsi,(uint64_t *) registers->rdx,(uint64_t) registers->rcx,(uint64_t) registers->r8,(uint64_t) registers->r9);
+    break;
 
     case 8:
     //rdi -> mode
@@ -71,7 +64,7 @@ void syscallHandler(registerStruct * registers) {
 
     case 9: //Obtener los registros
     //rdi -> puntero a vector de uint64_t para guardar los valores
-    * ((uint64_t *)registers->rdi) = getRegisters();
+    getRegisters((uint64_t*)registers->rdi);
     break;
 
     case 10:
@@ -83,11 +76,6 @@ void syscallHandler(registerStruct * registers) {
     case 11:
     //rdi -> puntero a int para devolver si hay algo
     bufferEmpty((uint64_t *) registers->rdi);
-    break;
-
-    case 12: //addKeyPressedFunction
-    //rdi -> puntero a funcion
-    addKeyPressedFunction(registers->rdi);
     break;
 
     case 13: //isMayus

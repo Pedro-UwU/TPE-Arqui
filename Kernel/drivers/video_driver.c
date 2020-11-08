@@ -50,7 +50,7 @@ struct vbe_mode_info_structure * screenData = (struct vbe_mode_info_structure *)
 
 void clearDisplay(color col) {
   uint64_t totalPixels = screenData->width*screenData->height;
-  uint8_t * curpos = (uint8_t *)screenData->framebuffer;
+  uint8_t * curpos = screenData->framebuffer;
   uint8_t b = col & 0x0000FF;
 	uint8_t g = (col >> 8) & 0x0000FF;
 	uint8_t r = (col >> 16) & 0x0000FF;
@@ -72,7 +72,7 @@ void drawRectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, colo
     for (uint64_t i = 0; i < height; i++) {
       for (uint64_t j = 0; j < width; j++) {
         if (legalCoordinates(x+j, y+i)) {
-          uint8_t * pos = (screenData->framebuffer+ ((y+i) * screenData->width + (x+j))*3);
+          uint8_t * pos = (uint8_t*)(screenData->framebuffer+ ((y+i) * screenData->width + (x+j))*3);
           *pos = b;
           pos++;
           *pos = g;
@@ -96,7 +96,7 @@ void drawLine(uint64_t xStart, uint64_t yStart, uint64_t xEnd, uint64_t yEnd, co
     float b0 = 1.0f * yStart - m*xStart;
     for(uint64_t i = xStart; i <= xEnd; i++){
           uint64_t y = (uint64_t) (m * i + b0);
-          uint8_t * pos = (uint8_t *)screenData->framebuffer+ (y * screenData->width + i) * 3;
+          uint8_t * pos = (uint8_t *)(screenData->framebuffer+ (y * screenData->width + i) * 3);
           *pos = b;
           pos++;
           *pos = g;
@@ -112,7 +112,7 @@ static void drawVerticalLine(uint64_t x, uint64_t yStart, uint64_t yEnd, color c
   uint8_t g = (col >> 8) & 0x0000FF;
   uint8_t r = ( col >> 16) & 0x0000FF;
   for (uint64_t i = yStart; i <= yEnd; i++) {
-    uint8_t * pos = (uint8_t *)screenData->framebuffer+ (i * screenData->width + x) * 3;
+    uint8_t * pos = (uint8_t *)(screenData->framebuffer+ (i * screenData->width + x) * 3);
     *pos = b;
     pos++;
     *pos = g;
@@ -161,7 +161,7 @@ void drawMatrix(uint64_t x, uint64_t y, color *mat, uint64_t width, uint64_t hei
         uint8_t b = col & 0x0000FF;
         uint8_t g = (col >> 8 )& 0x0000FF;
         uint8_t r = ( col >> 16) & 0x0000FF;
-        uint8_t * pos = (uint8_t *)screenData->framebuffer+ ((y+i) * screenData->width + (x+j)) * 3;
+        uint8_t * pos = (uint8_t *)(screenData->framebuffer+ ((y+i) * screenData->width + (x+j)) * 3);
         *pos = b;
         pos++;
         *pos = g;
@@ -173,7 +173,7 @@ void drawMatrix(uint64_t x, uint64_t y, color *mat, uint64_t width, uint64_t hei
 
 void drawPixel(uint64_t x, uint64_t y, color col) {
 		if (!legalCoordinates(x, y)) return;
-    char * curpos = (uint8_t *)screenData->framebuffer;
+    uint8_t * curpos = screenData->framebuffer;
     curpos+=(x+screenData->width*y)*3;
 
     uint8_t b = col & 0x0000FF;

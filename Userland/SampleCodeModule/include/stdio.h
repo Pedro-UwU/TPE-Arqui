@@ -11,7 +11,6 @@ char * getSTD_INAddress();
 char * getSTD_OUTAddress();
 void writeInStream(char stream, char * str, int size);
 int readKeyboard(char * buffer, int size);
-void setKeyPressedFunction(void (*)(uint8_t));
 void setConsoleUpdateFunction(void (*f)(char *, int));
 char getChar();
 void print(char *, ...);

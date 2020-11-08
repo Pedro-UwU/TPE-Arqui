@@ -15,16 +15,10 @@
 #include <timer.h>
 #include <charLib.h>
 
-static char finished = 0;
-static char * stdIn;
-static char * stdOut;
-
-
 static char lines[TOTAL_LINES][MAX_LINE_LENGTH];// = {0};
 static uint8_t lineCursor = 0;
 static uint8_t currentLineNumber = 0;
 
-static void readKey();
 static void addLine();
 static void drawShellLines();
 static void clearShellLine(uint8_t line);
@@ -37,30 +31,11 @@ void updateShell(char * buff, int dim);
 char commandsNames[][10]={"time","test","inforeg","chess","printmem"};
 void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {time,test,inforeg,chess,printmem};
 static int totalCommands = 6;
+
 void init_shell() {
-  stdIn = getSTD_INAddress();
-  stdOut = getSTD_OUTAddress();
-  //setKeyPressedFunction(keyPressedShell);
   setConsoleUpdateFunction(updateShell);
-  //readKey();
   drawShellLines();
-  //
-  // while(!finished) {
-  //
-  // }
 }
-
-static void readKey() {
-  uint8_t bufferLength = 5;
-  char buffer[bufferLength];
-  for (int i = 0; i < bufferLength; i++){
-    buffer[i] = 0;
-  }
-  if (readKeyboard(buffer, bufferLength)) {
-    writeToLines(buffer, bufferLength);
-  }
-}
-
 void writeToLines(char * buff, int dim) {
   for (int i = 0; i < dim && buff[i] != 0 && i < MAX_LINE_LENGTH; i++) {
     if (buff[i] == '\n' || lineCursor == (MAX_LINE_LENGTH - 1)) { //El -1 es para que el ultimo elemento sea un 0
@@ -147,7 +122,6 @@ static void exeCommand(char * line){
 
 //devuelve que comando es si no esta  devuelve -1
 static int isCommand(char * name){
-  int i = 0;
   for (int i = 0; i < totalCommands; i++) {
     if (!strcmp(commandsNames[i],name)){
       return i;

@@ -7,7 +7,6 @@ GLOBAL getTimeSyscall
 GLOBAL getRegistersSyscall
 GLOBAL getMemSyscall
 GLOBAL drawMatrixSyscall
-GLOBAL setKeyPressedFunctionSyscall
 GLOBAL isMayusSyscall
 section .text
 
@@ -98,17 +97,6 @@ getRegistersSyscall:
   mov rbp, rsp
 
   mov rax, 9
-  int 80h
-
-  mov rsp, rbp
-  pop rbp
-  ret
-
-setKeyPressedFunctionSyscall:
-  push rbp
-  mov rbp, rsp
-
-  mov rax, 12
   int 80h
 
   mov rsp, rbp

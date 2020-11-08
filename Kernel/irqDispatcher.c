@@ -8,7 +8,6 @@
 #include <regi.h>
 #include <syscalls.h>
 #include <test.h>
-#include <funciones_para_testeo.h>
 
 static void int_21h(registerStruct *);
 static void int_80h(registerStruct *);

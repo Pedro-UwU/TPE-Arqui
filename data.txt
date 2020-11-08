@@ -1,33 +1,20 @@
-cd Bootloader; make all
-make[1]: Entering directory '/root/Bootloader'
-cd BMFS; make all
-make[2]: Entering directory '/root/Bootloader/BMFS'
-gcc -ansi -std=c99 -Wall -pedantic -o bmfs.bin bmfs.c
-make[2]: Leaving directory '/root/Bootloader/BMFS'
-cd Pure64; make all
-make[2]: Entering directory '/root/Bootloader/Pure64'
-make[2]: Nothing to be done for 'all'.
-make[2]: Leaving directory '/root/Bootloader/Pure64'
-make[1]: Leaving directory '/root/Bootloader'
-cd Kernel; make all
-make[1]: Entering directory '/root/Kernel'
-make[1]: Nothing to be done for 'all'.
-make[1]: Leaving directory '/root/Kernel'
-cd Userland; make all
-make[1]: Entering directory '/root/Userland'
-echo "AAAAAAAAAAA"
-AAAAAAAAAAA
-cd SampleCodeModule; make
-make[2]: Entering directory '/root/Userland/SampleCodeModule'
-ld  -T ./sampleCodeModule.ld _loader.o asm/syscallsASM.o Shell/Shell.o libs/stdlib.o libs/stdio.o libs/stdGraphics.o sampleCodeModule.o -o ../0000-sampleCodeModule.bin
-echo "AAAA"
-AAAA
-make[2]: Leaving directory '/root/Userland/SampleCodeModule'
-printf "This is sample data." >> 0001-sampleDataModule.bin && dd if=/dev/zero bs=1 count=1 >> 0001-sampleDataModule.bin
-make[1]: Leaving directory '/root/Userland'
-cd Image; make all
-make[1]: Entering directory '/root/Image'
-../Toolchain/ModulePacker/mp.bin ../Kernel/kernel.bin ../Userland/0000-sampleCodeModule.bin ../Userland/0001-sampleDataModule.bin -o packedKernel.bin
-Makefile:22: recipe for target 'packedKernel.bin' failed
-make[1]: Leaving directory '/root/Image'
-Makefile:14: recipe for target 'image' failed
+drivers/video_driver.c: In function 'clearDisplay':
+drivers/video_driver.c:53:22: warning: initialization makes pointer from integer without a cast
+   uint8_t * curpos = screenData->framebuffer;
+                      ^
+drivers/video_driver.c: In function 'drawPixel':
+drivers/video_driver.c:176:24: warning: initialization makes pointer from integer without a cast
+     uint8_t * curpos = screenData->framebuffer;
+                        ^
+chess/chess.c: In function 'drawGame':
+chess/chess.c:901:24: warning: passing argument 1 of 'reDrawChessConsole' from incompatible pointer type
+     reDrawChessConsole(buffer[turn]);
+                        ^
+chess/chess.c:844:13: note: expected 'char (*)[191]' but argument is of type 'char *'
+ static void reDrawChessConsole(char buffer[][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2]){
+             ^
+1+0 records in
+1+0 records out
+1 byte (1 B) copied, 0.0096074 s, 0.1 kB/s
+make[1]: *** [x64BareBonesImage.img] Segmentation fault
+make: *** [image] Error 2

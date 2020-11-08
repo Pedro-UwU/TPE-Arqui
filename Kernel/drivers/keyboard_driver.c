@@ -20,9 +20,6 @@ static char BUFFER[BUFFER_SIZE] = {0}; //Buffer circular
 static uint64_t startIndex = 0; //Indice del comienzo para el read
 static uint64_t endIndex = 0; //Indice del final para el read
 
-void (*keyPressedFunction_driver)(uint8_t keyCode);
-uint8_t keyPressedExists = 0;
-
 void keyboardHandler(registerStruct * registers) {
   uint8_t keyCode = getKeyCode();
 
@@ -42,10 +39,7 @@ void keyboardHandler(registerStruct * registers) {
     uint8_t mayus = (shiftL || shiftR);
     BUFFER[(endIndex++)%BUFFER_SIZE] = pressCodes[keyCode][mayus];
   }
-
-
 }
-
 
 void readKeyboard(char * buff, uint8_t size, uint64_t * count) {
   int i = 0;
@@ -58,12 +52,6 @@ void readKeyboard(char * buff, uint8_t size, uint64_t * count) {
 void bufferEmpty(uint64_t * target) {
   *target = (endIndex - startIndex);
 }
-
-void addKeyPressedFunction(void (*func)(uint8_t)){
-  keyPressedExists = 1;
-  keyPressedFunction_driver = func;
-}
-
 void isMayus(uint64_t * target) {
   *target = (shiftL || shiftR);
 }
