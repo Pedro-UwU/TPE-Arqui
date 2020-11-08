@@ -694,6 +694,9 @@ static void promotePiece(int x,int y){
 
 static void endGame(int winner, int by){
     int movx=0,movy=0;
+    if (winner>=0){
+        oldGame=0;
+    }
     for (int i = 0; i < SCREEN_HEIGHT/SQUAREDIM; movy+=SQUAREDIM, movx= 0 ,i++){
         for (int j = 0; j < SCREEN_WIDTH/SQUAREDIM; movx+=SQUAREDIM,j++){
             if ((j+i)%2){
