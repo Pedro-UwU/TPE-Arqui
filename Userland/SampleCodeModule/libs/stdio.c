@@ -87,6 +87,12 @@ void print(char * str, ...) {
         intToBase(va_arg( vl, int ),16, tmp);
         strcpy(&buffer[j], tmp);
         j+=strlen(tmp);
+        break;
+        case 'X': //uint64_t hexa
+        intToBase(va_arg( vl, uint64_t ),16, tmp);
+        strcpy(&buffer[j], tmp);
+        j+=strlen(tmp);
+        break;
       }
     } else {
       buffer[j++] = str[i];

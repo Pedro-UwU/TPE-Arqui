@@ -4,7 +4,8 @@ GLOBAL isKeyboardEmptySyscall
 GLOBAL clearDisplaySyscall
 GLOBAL drawRectSyscall
 GLOBAL getTimeSyscall
-GLOBAL getRegisters
+GLOBAL getRegistersSyscall
+GLOBAL getMemSyscall
 GLOBAL drawMatrixSyscall
 GLOBAL setKeyPressedFunctionSyscall
 GLOBAL isMayusSyscall
@@ -92,7 +93,7 @@ getTimeSyscall:
   pop rbp
   ret
 
-getRegisters:
+getRegistersSyscall:
   push rbp
   mov rbp, rsp
 
@@ -119,6 +120,17 @@ isMayusSyscall:
   mov rbp, rsp
 
   mov rax, 13 ;ID isMayus
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+getMemSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 10 ;ID get43BytesFromAddress
   int 80h
 
   mov rsp, rbp

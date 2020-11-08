@@ -2,6 +2,6 @@
 #include <stdint.h>
 #include <syscallsASM.h>
 
-void inforegs(uint64_t * registers){
-    getRegisters(registers);
+void getRegisters(uint64_t * registers){
+    getRegistersSyscall(registers);
 }

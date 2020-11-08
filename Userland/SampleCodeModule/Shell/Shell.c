@@ -20,7 +20,7 @@ static char * stdIn;
 static char * stdOut;
 
 
-static char lines[TOTAL_LINES][MAX_LINE_LENGTH] = {{0}};// = {0};
+static char lines[TOTAL_LINES][MAX_LINE_LENGTH];// = {0};
 static uint8_t lineCursor = 0;
 static uint8_t currentLineNumber = 0;
 
@@ -30,13 +30,13 @@ static void drawShellLines();
 static void clearShellLine(uint8_t line);
 static void drawBottomLine();
 static void clearScreenLine(uint8_t line);
-static void exeCommand(int i);
-static int isCommand();
+static void exeCommand(char*);
+static int isCommand(char * name);
 void updateShell(char * buff, int dim);
 
 char commandsNames[5][10]={"time","test","inforeg","chess"};
-void  (* run[])(int,char * * ) = {time,test,inforeg,chess};
-
+void  (* run[])(char*) = {time,test,inforeg,chess};
+static int totalCommands = 5;
 void init_shell() {
   stdIn = getSTD_INAddress();
   stdOut = getSTD_OUTAddress();
@@ -120,15 +120,33 @@ static void clearScreenLine(uint8_t line){
 }
 
 //ejecutaria los commands
-static void exeCommand(int i){
-  run[i](0,0);
+static void exeCommand(char * line){
+  char commandArgs[10][20] = {{0}}; //Maximo 10 argumentos de 20 caracteres c/u
+  int foundArgs = 0;
+  int index = 0;
+  int nameIndex = 0;
+  while (line[index] != 0 && line[index] != '\n' && foundArgs < 10) {
+    if (line[index] != ' ' && line[index] != '-') {
+      commandArgs[foundArgs][nameIndex++] = line[index];
+    }
+    else if (line[index] == ' ') {
+      foundArgs++;
+      nameIndex = 0;
+    }
+    index++;
+  }
+    int i = isCommand(commandArgs[0]);
+    if (i >= 0) {
+      run[i](commandArgs);
+    }
 
 }
 
 //devuelve que comando es si no esta  devuelve -1
-static int isCommand(){
-  for (int i = 0; i < 5; i++) {
-    if (!strcmp(commandsNames[i],lines[(currentLineNumber)%(TOTAL_LINES-1)]) && lines[(currentLineNumber)%(TOTAL_LINES-1)][0]){
+static int isCommand(char * name){
+  int i = 0;
+  for (int i = 0; i < totalCommands; i++) {
+    if (!strcmp(commandsNames[i],name)){
       return i;
     }
   }
@@ -138,9 +156,9 @@ static int isCommand(){
 void keyPressedShell(char ch) {
   if (ch) {
     if (ch == '\n') {
-      int i = isCommand();
+      int i = 1;
       if (i>=0) {
-        exeCommand(i);
+        exeCommand(lines[(currentLineNumber)%(TOTAL_LINES-1)]);
         drawShellLines();
       }
       else{
