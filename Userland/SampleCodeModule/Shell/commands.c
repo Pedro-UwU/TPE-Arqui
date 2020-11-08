@@ -80,7 +80,8 @@ void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
   print("inforeg - Displays the current register snapshot (Press F1 to update)\n");
   print("clear - clears the shell\n");
   print("divZero - Forces a divZero exception (For testing purposes)\n");
-  print("invalidOPCode - Forces a invalid opcode exception (For testing purposes)");
+  print("invalidOPCode - Forces a invalid opcode exception (For testing purposes)\n");
+  print("UWU - Surprise");
 }
 
 void echo(char args[MAX_ARGS][MAX_ARG_LEN]) {
@@ -89,4 +90,19 @@ void echo(char args[MAX_ARGS][MAX_ARG_LEN]) {
     print(args[i]);
     putChar(' ');
   }
+}
+
+void uwu(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\n\n\n");
+  print("  @@@@            @@@@                                    (@@@&           *@@@& \n");
+  print("  @@@@            @@@@                                    (@@@&           *@@@& \n");
+  print("  @@@@            @@@@    @@@@         &@&        @@@@    (@@@&           *@@@& \n");
+  print("  @@@@            @@@@    ,@@@@       @@@@@       @@@@    (@@@&           *@@@& \n");
+  print("  @@@@            @@@@     &@@@&     .@@@@@@     .@@@&    (@@@&           *@@@& \n");
+  print("  @@@@            @@@@      @@@@     @@@ @@@(    @@@@     (@@@&           *@@@& \n");
+  print("  @@@@.           @@@@       @@@@   @@@@ /@@@    @@@*     ,@@@@           #@@@# \n");
+  print("   @@@@.         @@@@#       ,@@@. &@@@   @@@@  @@@#       @@@@@         ,@@@@  \n");
+  print("    @@@@@@@&#&@@@@@@          @@@@@@@@     @@@@@@@,         *@@@@@@&#&@@@@@@&   \n");
+  print("       &@@@@@@@@@.             (@@@@        @@@@#              /@@@@@@@@@&      \n");
+  print("\n\n\n");
 }
