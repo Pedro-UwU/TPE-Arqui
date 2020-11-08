@@ -41,7 +41,7 @@ void syscallHandler(registerStruct * registers) {
       clearDisplay((uint64_t) registers->rdi);
       break;
     case 3:
-    // r9 xstart , r8 ystart, r10 xend, r11 yend, rsi color
+    // rs xstart , r8 ystart, r10 xend, r11 yend, rsi color
       drawLine((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->r10,(uint64_t) registers->r11,(uint64_t) registers->rsi);
       break;
     case 4:
@@ -59,12 +59,6 @@ void syscallHandler(registerStruct * registers) {
     case 7:
       * ((uint64_t *)registers->rdi) = getTicks();
       break;
-    //
-    //case 1: writeSTR
-    //case 2: getDate
-    //case 4: getMillis (?)
-
-
     case 8:
     //rdi -> mode
     //rsi -> puntero a entero
