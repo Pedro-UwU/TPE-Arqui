@@ -4,12 +4,14 @@
 #include <stdGraphics.h>
 #include <timer.h>
 #include <inforeg.h>
+#include <Shell.h>
 #include <stdint.h>
 
 void test(){
-    char num[3];
-    int len = intToString(3,num);
-    drawString(0,0,num,len,0x00ffff,0x000000,1,0);
+  char buff[10] = {0};
+  scan(buff);
+  print(buff);
+  print("\n");
 }
 
 void inforeg(){
@@ -23,7 +25,7 @@ void inforeg(){
     drawString(0,movey,num, len, 0xffffff,0,1,0);
     movey+=BASE_CHAR_HEIGHT;
   }
-  
+
 }
 
 void timer(){
@@ -55,7 +57,7 @@ void timer(){
     int seconds = readSeconds();
     len = intToString(seconds,num);
     movex+=BASE_CHAR_WIDTH;
-    if (seconds<10){ 
+    if (seconds<10){
       drawString(movex,0,"0",len,0xffff00,0,1,0);
       movex+=BASE_CHAR_WIDTH;
     }

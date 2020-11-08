@@ -6,7 +6,8 @@ GLOBAL drawRectSyscall
 GLOBAL getTimeSyscall
 GLOBAL getRegisters
 GLOBAL drawMatrixSyscall
-
+GLOBAL setKeyPressedFunctionSyscall
+GLOBAL isMayusSyscall
 section .text
 
 
@@ -96,6 +97,28 @@ getRegisters:
   mov rbp, rsp
 
   mov rax, 9
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+setKeyPressedFunctionSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 12
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+isMayusSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 13 ;ID isMayus
   int 80h
 
   mov rsp, rbp

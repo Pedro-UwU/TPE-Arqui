@@ -5,13 +5,25 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <syscallsASM.h>
-
+#include <charLib.h>
+#include <stdlib.h>
 
 #include <stdGraphics.h>
+
+void keyPressedStdIO(uint8_t keyCode);
 
 char * std_in;
 char * std_out;
 static char std_io_initialized = 0;
+void (*setKeyPressedPointer)(uint8_t);
+uint8_t funcPointerInitialized = 0;
+
+void (*updateConsolePointer)(char *, int);
+uint8_t updateConsoleInitialized = 0;
+
+
+
+static char lastCharReaded;
 
 void stdio_init() {
   if (!std_io_initialized) { //para no inicializarlo 2 veces
@@ -21,6 +33,7 @@ void stdio_init() {
     std_out = buffer2;
     std_io_initialized = 1;
   }
+  setKeyPressedFunctionSyscall(keyPressedStdIO);
 }
 
 char * getSTD_INAddress() {
@@ -31,9 +44,27 @@ char * getSTD_OUTAddress() {
   return std_out;
 }
 
-int scanf(char * fmt, ...);
+void scan(char * buff) {
+  int ch = 0;
+  int index = 0;
+  while (ch != '\n') {
+    if (ch)
+      buff[index++] = ch;
+      putChar(ch);
+    ch = getChar();
+  }
+  putChar('\n');
+}
 
-int printf(char * fmt, ...);
+void print(char * buff) {
+  for (int i = 0; buff[i] != 0; i++) {
+    putChar(buff[i]);
+  }
+}
+
+void putChar(char ch) {
+  updateConsolePointer(&ch, 1);
+}
 
 void writeInStream(char stream, char * str, int size) {
   char * buffer;
@@ -52,11 +83,43 @@ int readKeyboard(char * buffer, int size) {
   if (size == 0) return 0;
   uint64_t aux;
   isKeyboardEmptySyscall(&aux);
+  uint64_t count = 0;
   if (aux) {
-    readKeyboardSysCall(buffer, (uint8_t) size);
+    readKeyboardSysCall(buffer, (uint8_t) size, &count);
     return 1;
   }
   return 0;
+}
+
+void setKeyPressedFunction(void (*f)(uint8_t)) {
+  setKeyPressedPointer = f;
+  funcPointerInitialized = 1;
+}
+
+void setConsoleUpdateFunction(void (*f)(char *, int)) {
+  updateConsolePointer = f;
+  updateConsoleInitialized = 1;
+}
+
+
+
+
+void keyPressedStdIO(uint8_t keyCode) {
+  char c = getAsciiFromKeyCode(keyCode);
+  if (c) {
+    lastCharReaded = c;
+  }
+  if (funcPointerInitialized) {}
+    setKeyPressedPointer(keyCode);
+}
+
+char getChar() {
+  char ch = 0;
+  uint64_t count;
+  while(ch == 0 || count == 0) {
+    readKeyboardSysCall(&ch, 1, &count);
+  }
+  return ch;
 }
 
 

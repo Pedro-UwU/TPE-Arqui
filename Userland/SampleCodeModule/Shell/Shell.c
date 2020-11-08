@@ -9,9 +9,11 @@
 #include <stdint.h>
 #include <colors.h>
 #include <commands.h>
+#include <Shell.h>
 #include <stdlib.h>
 #include <chess.h>
 #include <timer.h>
+#include <charLib.h>
 
 static char finished = 0;
 static char * stdIn;
@@ -23,7 +25,6 @@ static uint8_t lineCursor = 0;
 static uint8_t currentLineNumber = 0;
 
 static void readKey();
-static void writeToLines(char * buff, int dim);
 static void addLine();
 static void drawShellLines();
 static void clearShellLine(uint8_t line);
@@ -31,6 +32,7 @@ static void drawBottomLine();
 static void clearScreenLine(uint8_t line);
 static void exeCommand(int i);
 static int isCommand();
+void updateShell(char * buff, int dim);
 
 char commandsNames[5][10]={"timer","test","inforeg","chess"};
 void  (* run[])(int,char * * ) = {timer,test,inforeg,chess};
@@ -38,12 +40,14 @@ void  (* run[])(int,char * * ) = {timer,test,inforeg,chess};
 void init_shell() {
   stdIn = getSTD_INAddress();
   stdOut = getSTD_OUTAddress();
+  //setKeyPressedFunction(keyPressedShell);
+  setConsoleUpdateFunction(updateShell);
   //readKey();
   drawShellLines();
-
-  while(!finished) {
-    readKey();
-  }
+  //
+  // while(!finished) {
+  //
+  // }
 }
 
 static void readKey() {
@@ -57,7 +61,7 @@ static void readKey() {
   }
 }
 
-static void writeToLines(char * buff, int dim) {
+void writeToLines(char * buff, int dim) {
   for (int i = 0; i < dim && buff[i] != 0 && i < MAX_LINE_LENGTH; i++) {
     if (buff[i] == '\n' || lineCursor == (MAX_LINE_LENGTH - 1)) { //El -1 es para que el ultimo elemento sea un 0
       addLine();
@@ -124,6 +128,7 @@ static void clearScreenLine(uint8_t line){
 //ejecutaria los commands
 static void exeCommand(int i){
   run[i](0,0);
+
 }
 
 //devuelve que comando es si no esta  devuelve -1
@@ -134,6 +139,15 @@ static int isCommand(){
     }
   }
   return -1;
+}
+
+void keyPressedShell(char ch) {
+  if (ch)
+    writeToLines(&ch, 1);
+}
+
+void updateShell(char * buff, int dim) {
+  writeToLines(buff, dim);
 }
 
 #endif
