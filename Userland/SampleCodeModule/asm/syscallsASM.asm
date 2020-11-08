@@ -7,7 +7,7 @@ GLOBAL getTimeSyscall
 GLOBAL getRegistersSyscall
 GLOBAL getMemSyscall
 GLOBAL drawMatrixSyscall
-GLOBAL isMayusSyscall
+GLOBAL readErrorSyscall
 section .text
 
 
@@ -103,22 +103,22 @@ getRegistersSyscall:
   pop rbp
   ret
 
-isMayusSyscall:
+getMemSyscall:
   push rbp
   mov rbp, rsp
 
-  mov rax, 13 ;ID isMayus
+  mov rax, 10 ;ID get43BytesFromAddress
   int 80h
 
   mov rsp, rbp
   pop rbp
   ret
 
-getMemSyscall:
+readErrorSyscall:
   push rbp
   mov rbp, rsp
 
-  mov rax, 10 ;ID get43BytesFromAddress
+  mov rax, 12 ;ID readError
   int 80h
 
   mov rsp, rbp

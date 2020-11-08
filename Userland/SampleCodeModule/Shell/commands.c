@@ -9,12 +9,6 @@
 #include <syscallsASM.h>
 #include <forcedExceptions.h>
 
-void test(char args[MAX_ARGS][MAX_ARG_LEN]){
-  putChar('\n');
-  print("Hola %x", 15);
-}
-
-
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
   uint64_t registers[19];
@@ -48,7 +42,11 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
     for (int i = 0; i < 32; i++, aux++) {
       uint64_t mem = 1;
       getMemSyscall(aux, &mem);
-      print("-0x%x: %x\n",aux, mem);
+      if (mem == 0) {
+        print("-0x%x: 0\n");
+      } else {
+        print("-0x%x: %x\n",aux, mem);
+      }
     }
   } else {
     print("INVALID ADDRESS\n");
@@ -62,5 +60,32 @@ void time(char args[MAX_ARGS][MAX_ARG_LEN]) {
 
 void divZero(char args[MAX_ARGS][MAX_ARG_LEN]) {
   forceDivZero();
-  print("SE DIVIDIO\n");
+}
+
+void invalidOPCode(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  forceInvalidOPCode();
+}
+
+void clear(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  clearShell();
+}
+
+void help(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  print("\nAVAILABLE COMMANDS: \n");
+  print("time - Displays current time and date\n");
+  print("echo [...] - Prints the given arguments in the shell (%d words max)\n", MAX_ARGS);
+  print("chess - Starts a chess game\n");
+  print("printmem [address] - Shows 32 bytes of memory from the given address\n");
+  print("inforeg - Displays the current register snapshot (Press F1 to update)\n");
+  print("clear - clears the shell\n");
+  print("divZero - Forces a divZero exception (For testing purposes)\n");
+  print("invalidOPCode - Forces a invalid opcode exception (For testing purposes)");
+}
+
+void echo(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  putChar('\n');
+  for (int i = 1; args[i][0] != 0 && i < MAX_ARGS; i++) {
+    print(args[i]);
+    putChar(' ');
+  }
 }

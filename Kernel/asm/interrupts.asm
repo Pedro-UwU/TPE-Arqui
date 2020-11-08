@@ -6,7 +6,9 @@ GLOBAL _irq00Handler
 GLOBAL _irq01Handler
 GLOBAL _irq80Handler
 GLOBAL _exc00Handler
+GLOBAL _exc06Handler
 GLOBAL saveInitialConditions
+
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -106,6 +108,9 @@ _irq80Handler:
 
 _exc00Handler:
 	exceptionHandler 0
+
+_exc06Handler:
+	exceptionHandler 6
 
 picMasterMask:
 	 push rbp

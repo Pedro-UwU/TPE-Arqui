@@ -15,4 +15,5 @@ void setConsoleUpdateFunction(void (*f)(char *, int));
 char getChar();
 void print(char *, ...);
 void putChar(char ch);
+uint64_t getError();
 #endif

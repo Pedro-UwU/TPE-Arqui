@@ -102,5 +102,10 @@ char getChar() {
   return ch;
 }
 
+uint64_t getError() {
+  uint64_t err = 32;
+  readErrorSyscall(&err);
+  return err;
+}
 
 #endif

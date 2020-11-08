@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 static registerStruct registerSnapshot;
+static uint64_t errNum = 32;
 
 void saveRegisters(registerStruct * registers) {
   registerSnapshot.r15 = registers->r15;
@@ -41,4 +42,11 @@ void get32bytesFromAddress(uint64_t address, uint64_t * target, uint8_t totalByt
   }
 }
 
+void saveErrCode(uint64_t err) {
+  errNum = err;
+}
+
+uint64_t getErrCode() {
+  return errNum;
+}
 #endif
