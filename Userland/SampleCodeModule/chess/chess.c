@@ -134,7 +134,7 @@ void chess(){
             {0,0,0,0,0,0,0,0},
             {0,0,1,0,-1,0,0,0},
             {0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,2,0,0,0},
             {0,0,0,0,0,0,0,0},
         };
         for (int i = 0; i < SQUARES; i++){
@@ -422,9 +422,6 @@ static int validCastle(char *buf){
                         board[7][5]=board[7][7];
                         board[7][7]=0;
                         castleMove[turn%2][0]=1;
-                        drawBoard();
-                        turn=(turn+1)%TOTAL_LINES_CHESS;
-                        reDrawChessConsole(buffer);
                         return 1;
                     }
                 }
@@ -438,9 +435,6 @@ static int validCastle(char *buf){
                         board[0][5]=board[0][7];
                         board[0][7]=0;
                         castleMove[turn%2][0]=1;
-                        drawBoard();
-                        turn=(turn+1)%TOTAL_LINES_CHESS;
-                        reDrawChessConsole(buffer);
                         return 1;
                     }
                 }
@@ -456,9 +450,6 @@ static int validCastle(char *buf){
                         board[7][3]=board[7][0];
                         board[7][0]=0;
                         castleMove[turn%2][0]=1;
-                        drawBoard();
-                        turn=(turn+1)%TOTAL_LINES_CHESS;
-                        reDrawChessConsole(buffer);
                         return 1;
                     }
                 }
@@ -471,9 +462,6 @@ static int validCastle(char *buf){
                     board[0][3]=board[0][0];
                     board[0][0]=0;
                     castleMove[turn%2][0]=1;
-                    drawBoard();
-                    turn=(turn+1)%TOTAL_LINES_CHESS;
-                    reDrawChessConsole(buffer);
                     return 1;
                 }
             }
@@ -537,6 +525,7 @@ static void console(){
             }
             if (buf[0]=='Q'){
                 drawFullConsole();
+                reDrawChessConsole(buffer);
                 continue;
             }
             if (buf[0]=='R'){
@@ -558,6 +547,7 @@ static void console(){
                     if ( detectCheck()==(((turn+1)%2)+1)){
                         board[yi][xi]=board[yf][xf];
                         board[yf][xf]=aux;
+                        reDrawChessConsole(buffer);
                         drawString(CONSOLE_LIMIT_X,MOVEMENT,"YOU CANNOT CHECK YOURSELF",26,WHITE,BLACK,1,0);
                     } else {
                         validMove=1;
@@ -602,6 +592,9 @@ static void console(){
                         reDrawChessConsole(buffer);
                     }
                 } else if (validCastle(buffer[turn])){
+                    drawBoard();
+                    turn=(turn+1)%TOTAL_LINES_CHESS;
+                    reDrawChessConsole(buffer);
                     validMove=1;
                 }else {
                     drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,(8)*BASE_CHAR_HEIGHT,BLACK);
@@ -615,7 +608,7 @@ static void console(){
                 if (l>0){
                     l--;
                     buffer[turn][l]=0;
-                drawRect(movx+l*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,BASE_CHAR_WIDTH,BASE_CHAR_HEIGHT,0);
+                    drawRect(movx+l*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,BASE_CHAR_WIDTH,BASE_CHAR_HEIGHT,0);
                 }
             }else {
                 drawString(movx+l*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,buf,1,WHITE,BLACK,1,0);
@@ -634,16 +627,16 @@ static void console(){
                 endGame(0);
                 break;
             }
-            if (validMove){
-                validMove=0;
-                check =detectCheck();
-                if (check==1){
-                        drawString(CONSOLE_LIMIT_X,MOVEMENT+BASE_CHAR_HEIGHT,"PLAYER 1 IS ON CHECK",21,WHITE,BLACK,1,0);
-                    } else if(check==2){
-                        drawString(CONSOLE_LIMIT_X,MOVEMENT+BASE_CHAR_HEIGHT,"PLAYER 2 IS ON CHECK",21,WHITE,BLACK,1,0);
-                }
+            check =detectCheck();
+            if (check==1){
+                    drawString(CONSOLE_LIMIT_X,MOVEMENT+BASE_CHAR_HEIGHT,"PLAYER 1 IS ON CHECK",21,WHITE,BLACK,1,0);
+                } else if(check==2){
+                    drawString(CONSOLE_LIMIT_X,MOVEMENT+BASE_CHAR_HEIGHT,"PLAYER 2 IS ON CHECK",21,WHITE,BLACK,1,0);
             } else {
                 drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS+9*BASE_CHAR_HEIGHT,CONSOLE_SIZE_X,BASE_CHAR_HEIGHT,BLACK);
+            }
+            if (validMove){
+                validMove=0;
             }
         }
     }
@@ -875,13 +868,17 @@ static int drownedKing(){
 
 static void reDrawChessConsole(char buffer[][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2]){
     int x= CONSOLE_LIMIT_X;
-    int y = CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT;
+    int y = CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT*2;
     char player[1] = {(turn+1)%2+'1'};
     drawRect(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y,CONSOLE_SIZE_X,CONSOLE_SIZE_Y,BLACK);
     drawString(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,"P  |> ",7,WHITE,BLACK,1,0);
     drawString(CONSOLE_LIMIT_X+BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,player,1,WHITE,BLACK,1,0);
     for (int i = turn,j=0; j<TOTAL_LINES_CHESS/10; i--,j++){
-        drawString(x,y,buffer[i%TOTAL_LINES_CHESS],MAX_LENGTH,WHITE,BLACK,1,1);
+        if (i==turn){
+            drawString(x,y,buffer[i%TOTAL_LINES_CHESS],MAX_LENGTH,RED,BLACK,1,1);
+        }else {
+            drawString(x,y,buffer[i%TOTAL_LINES_CHESS],MAX_LENGTH,WHITE,BLACK,1,1);
+        }
         y-=BASE_CHAR_HEIGHT;
     }
 }
@@ -930,8 +927,8 @@ static void drawGame(){
     clearScreen(BACKGROUND);
     drawString(PLAYER_12_PLACE_X,PLAYER_1_PLACE_Y,"Player 1",strlen("player 1"),WHITE,BLACK,2,1);
     drawString(PLAYER_12_PLACE_X,PLAYER_2_PLACE_Y,"Player 2",strlen("player 2"),WHITE,BLACK,2,1);
-    reDrawChessConsole(buffer[turn]);
     drawBoard();
     drawHelp();
+    reDrawChessConsole(buffer);
     drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,10*BASE_CHAR_HEIGHT,BLACK);
 }
