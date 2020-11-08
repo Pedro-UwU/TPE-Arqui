@@ -82,6 +82,7 @@ static int oldGame = 0;
 static char buffer[TOTAL_LINES_CHESS][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2] = {{0}};
 static int rotate=0;
 static int castleMove[2][3]={{0,0,0},{0,0,0}};
+static int xyPassant[3]={-1,-1,-1};
 
 static void loadColorsPieces(uint64_t pieceC[][PIECES_SIZE],int j);
 static void console();
@@ -313,19 +314,28 @@ static int knightValidMov(int xi,int yi,int xf, int yf){
 
 static int pawnValidMov(int xi,int yi,int xf, int yf){
     if (fabs(xi-xf)>1 || fabs(yi-yf)>2) return 0;
+    if (fabs(xi-xf)==1 && xyPassant[0]!=-1 && xyPassant[0]==xf && xyPassant[1]==yf){
+        return 1;
+    }
     if (board[yf][xf]==0 && xi-xf!=0) return 0;
     if (board[yf][xf]!=0 && xi-xf==0) return 0;
     if (board[yi][xi]>0) {
-        if (board[yf][xf]==0 && yf-yi==2 && yi==1) return 1;
+        if (board[yf][xf]==0 && yf-yi==2 && yi==1){
+            xyPassant[0]=xf;
+            xyPassant[1]=2;
+            xyPassant[2]=turn;
+            return 1;
+        }
         if (yf-yi!=1) return 0;
     } else if (board[yi][xi]< 0){
-        if  (board[yf][xf]==0 && yf-yi==-2 && yi==6)return 1;
+        if  (board[yf][xf]==0 && yf-yi==-2 && yi==6){
+            xyPassant[0]=xf;
+            xyPassant[1]=5;
+            xyPassant[2]=turn;
+            return 1;
+        }
         if (yf-yi!=-1) return 0;
     }
-    if (fabs(yi-yf)==2){
-        
-    }
-    
     return 1;
 }
 
@@ -539,6 +549,14 @@ static void console(){
                         drawString(CONSOLE_LIMIT_X,MOVEMENT,"YOU CANNOT CHECK YOURSELF",26,WHITE,BLACK,1,0);
                     } else {
                         validMove=1;
+                        if (xyPassant[2]==turn-1){
+                            if (yf ==2 && xyPassant[1]==2) {
+                                board[yf+1][xf] =0;
+                            } else if(yf== 5 && xyPassant[1]==5){
+                                board[yf-1][xf] = 0;
+                            }
+                            xyPassant[0]=xyPassant[1]=xyPassant[2]=-1;
+                        }
                         if(fabs(board[yi][xi])==KING){
                             castleMove[turn%2][0]=1;
                         }else if ((board[yi][xi])==ROOK){
@@ -815,7 +833,7 @@ static int drownedKing(){
 
 static void reDrawChessConsole(char buffer[][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2]){
     int x= CONSOLE_LIMIT_X;
-    int y = CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT*2;
+    int y = CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT;
     char player[1] = {(turn+1)%2+'1'};
     drawRect(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y,CONSOLE_SIZE_X,CONSOLE_SIZE_Y,BLACK);
     drawString(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,"P  |> ",7,WHITE,BLACK,1,0);
