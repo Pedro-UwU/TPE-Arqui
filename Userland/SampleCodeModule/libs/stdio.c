@@ -13,10 +13,6 @@
 void (*updateConsolePointer)(char *, int);
 uint8_t updateConsoleInitialized = 0;
 
-void stdio_init() {
-
-}
-
 void scan(char * buff) {
   int ch = 0;
   int index = 0;

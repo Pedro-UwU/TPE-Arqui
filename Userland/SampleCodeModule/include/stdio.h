@@ -6,7 +6,6 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-void stdio_init();
 char * getSTD_INAddress();
 char * getSTD_OUTAddress();
 void writeInStream(char stream, char * str, int size);

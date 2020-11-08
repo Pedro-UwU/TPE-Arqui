@@ -14,7 +14,6 @@ int main() {
 	*v = 'X';
 	*(v+1) = 0x74;
 
-	stdio_init();
 	init_shell();
 
 	uint64_t error = getError();
