@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <syscallsASM.h>
 #include <forcedExceptions.h>
+#include <timer.h>
 
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);

@@ -8,6 +8,9 @@ GLOBAL getRegistersSyscall
 GLOBAL getMemSyscall
 GLOBAL drawMatrixSyscall
 GLOBAL readErrorSyscall
+GLOBAL setKeyPressedFunctionSyscall
+GLOBAL isMayusSyscall
+GLOBAL getTicksSyscall
 section .text
 
 
@@ -119,6 +122,17 @@ readErrorSyscall:
   mov rbp, rsp
 
   mov rax, 12 ;ID readError
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+getTicksSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 7 ;ID get43BytesFromAddress
   int 80h
 
   mov rsp, rbp

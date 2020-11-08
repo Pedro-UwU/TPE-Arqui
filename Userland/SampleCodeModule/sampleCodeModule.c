@@ -21,7 +21,12 @@ int main() {
 	if (error < 32) {
 		uint64_t registers[19];
 		getRegistersSyscall(registers);
-		print("ERROR: EXCEPTION %x\n", error);
+		print("ERROR: EXCEPTION %x ", error);
+		switch (error) {
+			case 0: print("(DIVISION BY ZERO)\n");
+			break;
+			case 1: print("(INVALID OPCODE)\n");
+		}
 		print("REGISTERS STATUS:\n");
 		print("R15: %X - R14: %X\n", registers[18], registers[17]);
 	  print("R13: %X - R12: %X\n", registers[16], registers[15]);

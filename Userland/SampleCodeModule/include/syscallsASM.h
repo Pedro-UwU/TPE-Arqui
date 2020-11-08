@@ -13,4 +13,5 @@ void getRegistersSyscall(uint64_t * registers);
 void drawMatrixSyscall(uint64_t x, uint64_t y, uint64_t *mat, uint64_t width, uint64_t height,uint64_t size);
 void getMemSyscall(uint64_t, uint64_t*);
 void readErrorSyscall(uint64_t *);
+void getTicksSyscall(uint64_t *);
 #endif
