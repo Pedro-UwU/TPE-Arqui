@@ -41,8 +41,8 @@ void syscallHandler(registerStruct * registers) {
       clearDisplay((uint64_t) registers->rdi);
       break;
     case 3:
-    // rs xstart , r8 ystart, r10 xend, r11 yend, rsi color
-      drawLine((uint64_t) registers->r9,(uint64_t) registers->r8,(uint64_t) registers->r10,(uint64_t) registers->r11,(uint64_t) registers->rsi);
+    // rdi xstart , rsi ystart, rdx xend, rcx yend, r8 color
+      drawLine((uint64_t) registers->rdi,(uint64_t) registers->rsi,(uint64_t) registers->rdx,(uint64_t) registers->rcx,(uint64_t) registers->r8);
       break;
     case 4:
     // r9 xi, r8 yi, rsi color
