@@ -3,15 +3,15 @@
 static char *figures[PIECES_AMOUNT]={"king","queen","bishop","knight","rook","pawn"};
 
 static int board[SQUARES][SQUARES] ={
-        {5,4,3,2,1,3,4,5},
-        {6,6,6,6,6,6,6,6},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {-6,-6,-6,-6,-6,-6,-6,-6},
-        {-5,-4,-3,-2,-1,-3,-4,-5}
-    };
+            {ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK},
+            {PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {-PAWN,-PAWN,-PAWN,-PAWN,-PAWN,-PAWN,-PAWN,-PAWN},
+            {-ROOK,-KNIGHT,-BISHOP,-QUEEN,-KING,-BISHOP,-KNIGHT,-ROOK}
+        };
 
 static char pieces[PIECES_AMOUNT][PIECES_SIZE][PIECES_SIZE] = {
     {
@@ -106,6 +106,7 @@ static int validCastle(char *buf);
 static int drownedKing();
 static void drawGame();
 static void drawFullConsole();
+static int fewPieces();
 
 void chess(){
     clearScreen(BACKGROUND);
@@ -127,14 +128,14 @@ void chess(){
             }
         }
         int newboard[SQUARES][SQUARES] = {
-            {5,4,3,2,1,3,4,5},
-            {6,6,6,6,6,6,6,6},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
-            {-6,-6,-6,-6,-6,-6,-6,-6},
-            {-5,-4,-3,-2,-1,-3,-4,-5}
+            {0,0,1,0,-1,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
         };
         for (int i = 0; i < SQUARES; i++){
             for (int j = 0; j < SQUARES; j++){
@@ -411,7 +412,7 @@ static int coorCheck(int x, int y){
 }
 
 static int validCastle(char *buf){
-    if (!strcmp("castle s",buffer[turn])){
+    if (!strcmp("CASTLE S",buffer[turn])){
         if (turn%2){ //turno de blancas
             if (castleMove[turn%2][0]==0 && castleMove[turn%2][1]==0){
                 if (board[7][5]==0 && board[7][6]==0){
@@ -445,7 +446,7 @@ static int validCastle(char *buf){
                 }
             }
         }
-    }else if(!strcmp("castle l",buffer[turn])){
+    }else if(!strcmp("CASTLE L",buffer[turn])){
         if (turn%2){
             if (castleMove[turn%2][0]==0 && castleMove[turn%2][2]==0){
                 if (board[7][2]==0 && board[7][1]==0 && board[7][3]==0){
@@ -528,24 +529,25 @@ static void console(){
             buf[i] = 0;
         }
         if (readKeyboard(buf, bufferLength)) {
+            buf[0]= toUpper(buf[0]);
             drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,(9)*BASE_CHAR_HEIGHT,BLACK);
-            if (buf[0]=='x') {
+            if (buf[0]=='X') {
                 oldGame =1;
                 break;
             }
-            if (buf[0]=='q'){
+            if (buf[0]=='Q'){
                 drawFullConsole();
                 continue;
             }
-            if (buf[0]=='r'){
+            if (buf[0]=='R'){
                 turnBoard();
                 drawBoard();
                 continue;
             } else if (buf[0]=='\n' || l > MAX_LENGTH){
                 l=0;
-                int xi = buffer[turn][0]-'a';
+                int xi = buffer[turn][0]-'A';
                 int yi = buffer[turn][1]-'0'-1;
-                int xf =buffer[turn][6]-'a';
+                int xf =buffer[turn][6]-'A';
                 int yf = buffer[turn][7]-'0'-1;
                 yi = reverse(yi);
                 yf = reverse(yf);
@@ -623,9 +625,13 @@ static void console(){
                 endGame((detectCheck()-1)?1:2);
                 break;
             }
+            if (fewPieces()){
+                endGame(0);
+                break;
+            }
             int drowned = drownedKing();
             if (drowned){
-                endGame(drowned);
+                endGame(0);
                 break;
             }
             if (validMove){
@@ -680,11 +686,15 @@ static void endGame(int winner){
             }
         }
     }
-    char winnerC = (char)winner+'0';
-    drawString(SCREEN_WIDTH/2-7*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2-2*BASE_CHAR_HEIGHT,"THE WINNER IS",14,BACKGROUND,BLACK,4,1);
-    drawString(SCREEN_WIDTH/2-4*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4-2*BASE_CHAR_HEIGHT,"PLAYER :",9,BACKGROUND,BLACK,4,1);
-    drawString(SCREEN_WIDTH/2-4*4*BASE_CHAR_WIDTH+BASE_CHAR_WIDTH*4*9,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4-2*BASE_CHAR_HEIGHT,&winnerC,1,BACKGROUND,BLACK,4,1);
-    drawString(SCREEN_WIDTH/2-11*3*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*3-2*BASE_CHAR_HEIGHT,"PRESS ANY KEY TO EXIT",22,BACKGROUND,BLACK,3,1);
+    if (winner){
+        char winnerC = (char)winner+'0';
+        drawString(SCREEN_WIDTH/2-7*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2-2*BASE_CHAR_HEIGHT,"THE WINNER IS",14,BACKGROUND,BLACK,4,1);
+        drawString(SCREEN_WIDTH/2-4*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4-2*BASE_CHAR_HEIGHT,"PLAYER :",9,BACKGROUND,BLACK,4,1);
+        drawString(SCREEN_WIDTH/2-4*4*BASE_CHAR_WIDTH+BASE_CHAR_WIDTH*4*9,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4-2*BASE_CHAR_HEIGHT,&winnerC,1,BACKGROUND,BLACK,4,1);
+        drawString(SCREEN_WIDTH/2-11*3*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*3-2*BASE_CHAR_HEIGHT,"PRESS ANY KEY TO EXIT",22,BACKGROUND,BLACK,3,1);
+    } else {
+        drawString(SCREEN_WIDTH/2-2*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2-2*BASE_CHAR_HEIGHT,"DRAW",4,BACKGROUND,BLACK,4,1);
+    }
     while(1){
         uint8_t bufferLength = 1;
         char buf[bufferLength];
@@ -775,6 +785,28 @@ static int detectCheck(){
         for (int j = 0; j < SQUARES;j++){
             if (validMovement(j,i,x1,y1,-1)) return 1;
             if (validMovement(j,i,x2,y2,-1)) return 2;
+        }
+    }
+    return 0;
+}
+
+static int fewPieces(){
+    int sum=0;
+    for (int i =0 ;i<SQUARES;i++){
+        for (int j =0 ;j <SQUARES;j++){
+            if (board[i][j]){
+                sum++;
+            }
+        }
+    }
+    if (sum==2)return 1;
+    if (sum==3){
+        for (int i =0 ;i<SQUARES;i++){
+            for (int j =0 ;j <SQUARES;j++){
+                if (fabs(board[i][j])==KNIGHT || fabs(board[i][j])==BISHOP){
+                    return 1;
+                }
+            }
         }
     }
     return 0;
