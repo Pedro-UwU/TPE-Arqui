@@ -8,7 +8,10 @@
 #include <stdint.h>
 
 void test(){
-  print("TEST\n");
+  char buff[10] = {0};
+  scan(buff);
+  print(buff);
+  print("\n");
 }
 
 void inforeg(){

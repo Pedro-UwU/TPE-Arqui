@@ -7,7 +7,6 @@
 #include <timer_driver.h>
 #include <date_driver.h>
 #include <IO_driver.h>
-#include <clib.h>
 
 void writeStr(registerStruct * registers);
 void getDateInfo(uint8_t mode, uint8_t * target);
@@ -19,7 +18,8 @@ void syscallHandler(registerStruct * registers) {
     case 0:
     //rdi -> puntero a buffer
     //rsi -> uint8_t size
-    readKeyboard((char *)registers->rdi, (uint8_t) registers->rsi);
+    //rdx -> putero a uint64_t count
+    readKeyboard((char *)registers->rdi, (uint8_t) registers->rsi, (uint64_t*)registers->rdx);
     break;
 
     //WRITE STR
@@ -120,10 +120,8 @@ void writeStr(registerStruct * registers) {
   char * buffer = (char *)registers->rdi;
   for (uint64_t i = 0; i < registers->rsi && buffer[i] != 0; i++) {
     char ch = ((char *)registers->rdi)[i];
-    if (isPrintable(ch)) {
-      drawChar(registers->rdx + xOffset, registers->rcx, ch, registers->r10, registers->r8, registers->r9, registers->r11);
-      xOffset += getCharWidth() * registers->r10;
-    }
+    drawChar(registers->rdx + xOffset, registers->rcx, ch, registers->r10, registers->r8, registers->r9, registers->r11);
+    xOffset += getCharWidth() * registers->r10;
   }
   //drawChar(0, 0, 'A',1, 0xFFFFFF, 0, 0);
 }

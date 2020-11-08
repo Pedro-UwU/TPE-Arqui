@@ -16,6 +16,12 @@ int main() {
 	stdio_init();
 	init_shell();
 
+	while (1) {
+		int ch = getChar();
+		print(&ch);
+
+	}
+
 	//Test if BSS is properly set up
 	if (var1 == 0 && var2 == 0)
 		return 0xDEADC0DE;

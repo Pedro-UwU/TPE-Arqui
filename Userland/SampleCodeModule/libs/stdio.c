@@ -44,21 +44,26 @@ char * getSTD_OUTAddress() {
   return std_out;
 }
 
-// void scan(char * buff) {
-//   char ch = 0;
-//   int index = 0;
-//   while (ch != '\n') {
-//     if (ch)
-//       buff[index++] = ch;
-//     ch = getChar();
-//     print("ASA");
-//   }
-//   print("TERMINO\n");
-// }
+void scan(char * buff) {
+  int ch = 0;
+  int index = 0;
+  while (ch != '\n') {
+    if (ch)
+      buff[index++] = ch;
+      putChar(ch);
+    ch = getChar();
+  }
+  putChar('\n');
+}
 
 void print(char * buff) {
-  int len = strlen(buff);
-  updateConsolePointer(buff, len);
+  for (int i = 0; buff[i] != 0; i++) {
+    putChar(buff[i]);
+  }
+}
+
+void putChar(char ch) {
+  updateConsolePointer(&ch, 1);
 }
 
 void writeInStream(char stream, char * str, int size) {
@@ -78,8 +83,9 @@ int readKeyboard(char * buffer, int size) {
   if (size == 0) return 0;
   uint64_t aux;
   isKeyboardEmptySyscall(&aux);
+  uint64_t count = 0;
   if (aux) {
-    readKeyboardSysCall(buffer, (uint8_t) size);
+    readKeyboardSysCall(buffer, (uint8_t) size, &count);
     return 1;
   }
   return 0;
@@ -108,7 +114,12 @@ void keyPressedStdIO(uint8_t keyCode) {
 }
 
 char getChar() {
-  return lastCharReaded;
+  char ch = 0;
+  uint64_t count;
+  while(ch == 0 || count == 0) {
+    readKeyboardSysCall(&ch, 1, &count);
+  }
+  return ch;
 }
 
 

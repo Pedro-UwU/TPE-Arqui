@@ -38,25 +38,21 @@ void keyboardHandler(registerStruct * registers) {
     saveRegisters(registers);
   }
 
-
-  else if (keyCode < KEYS) { //Si es una tecla presionada
-    uint8_t mayus = (shiftL | shiftR);
-    if (keyPressedExists) {
-      keyPressedFunction_driver(keyCode);
-    }
+  if (keyCode < KEYS) {
+    uint8_t mayus = (shiftL || shiftR);
     BUFFER[(endIndex++)%BUFFER_SIZE] = pressCodes[keyCode][mayus];
   }
+
 
 }
 
 
-uint8_t readKeyboard(char * buff, uint8_t size) {
-  int i;
-  for (i = 0; (startIndex + i) < endIndex && i < size; i++) {
-    buff[i] = BUFFER[(startIndex + i)%BUFFER_SIZE];
-    startIndex++;
-  }
-  return i;
+void readKeyboard(char * buff, uint8_t size, uint64_t * count) {
+  int i = 0;
+	for(i = 0; i<(endIndex-startIndex) && i<size; i++){
+		buff[i] = BUFFER[(startIndex++)%BUFFER_SIZE];
+	}
+	*count = i;
 }
 
 void bufferEmpty(uint64_t * target) {

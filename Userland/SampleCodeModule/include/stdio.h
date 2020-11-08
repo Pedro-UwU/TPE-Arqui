@@ -15,4 +15,5 @@ void setKeyPressedFunction(void (*)(uint8_t));
 void setConsoleUpdateFunction(void (*f)(char *, int));
 char getChar();
 void print(char * buff);
+void putChar(char ch);
 #endif

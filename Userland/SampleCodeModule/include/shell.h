@@ -4,4 +4,5 @@
 
 void init_shell();
 void writeToLines(char * buff, int dim);
+void keyPressedShell(char);
 #endif
