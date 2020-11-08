@@ -8,11 +8,10 @@
 #include <stdint.h>
 
 void test(){
-  char buff[10] = {0};
-  scan(buff);
-  print(buff);
-  print("\n");
+  putChar('\n');
+  print("Hola %x", 15);
 }
+
 
 void inforeg(){
   clearScreen(0);
@@ -26,6 +25,11 @@ void inforeg(){
     movey+=BASE_CHAR_HEIGHT;
   }
 
+}
+
+void time() {
+  putChar('\n');
+  print("%d:%d:%d %d/%d/%d", readHours(), readMinutes(), readSeconds(), readDays(), readMonths(), readYear());
 }
 
 void timer(){

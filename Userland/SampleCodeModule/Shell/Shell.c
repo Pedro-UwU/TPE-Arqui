@@ -34,8 +34,8 @@ static void exeCommand(int i);
 static int isCommand();
 void updateShell(char * buff, int dim);
 
-char commandsNames[5][10]={"timer","test","inforeg","chess"};
-void  (* run[])(int,char * * ) = {timer,test,inforeg,chess};
+char commandsNames[5][10]={"time","test","inforeg","chess"};
+void  (* run[])(int,char * * ) = {time,test,inforeg,chess};
 
 void init_shell() {
   stdIn = getSTD_INAddress();
@@ -65,13 +65,7 @@ void writeToLines(char * buff, int dim) {
   for (int i = 0; i < dim && buff[i] != 0 && i < MAX_LINE_LENGTH; i++) {
     if (buff[i] == '\n' || lineCursor == (MAX_LINE_LENGTH - 1)) { //El -1 es para que el ultimo elemento sea un 0
       addLine();
-      int i = isCommand();
-      if (i>=0) {
-        exeCommand(i);
-        drawShellLines();
-      }else{
-        drawString(0,SCREEN_HEIGHT-BASE_CHAR_HEIGHT*2,"COMMAND NOT FOUND",18,0xff0000,0,1,0);
-      }
+
     } else if (buff[i] == '\b') {
       if (lineCursor > 0) {
         lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor-1] = lines[currentLineNumber%(TOTAL_LINES-1)][lineCursor];
@@ -96,7 +90,7 @@ static void drawShellLines() {
   clearScreen(BLACK);
   int y = SCREEN_HEIGHT;
   int x = 0;
-  for (int i = 0; i >= -TOTAL_LINES; i--) {
+  for (int i = 0; i >= -TOTAL_LINES && i >= -currentLineNumber; i--) {
     y-=BASE_CHAR_HEIGHT;
     if (lines[(i+currentLineNumber)%(TOTAL_LINES-1)][0] == '0') continue;
     if (i == 0) {
@@ -134,7 +128,7 @@ static void exeCommand(int i){
 //devuelve que comando es si no esta  devuelve -1
 static int isCommand(){
   for (int i = 0; i < 5; i++) {
-    if (!strcmp(commandsNames[i],lines[(currentLineNumber-1)%(TOTAL_LINES-1)]) && lines[(currentLineNumber-1)%(TOTAL_LINES-1)][0]){
+    if (!strcmp(commandsNames[i],lines[(currentLineNumber)%(TOTAL_LINES-1)]) && lines[(currentLineNumber)%(TOTAL_LINES-1)][0]){
       return i;
     }
   }
@@ -142,8 +136,19 @@ static int isCommand(){
 }
 
 void keyPressedShell(char ch) {
-  if (ch)
-    writeToLines(&ch, 1);
+  if (ch) {
+    if (ch == '\n') {
+      int i = isCommand();
+      if (i>=0) {
+        exeCommand(i);
+        drawShellLines();
+      }
+      else{
+        print(" - INVALID COMMAND");
+      }
+    }
+    putChar(ch);
+  }
 }
 
 void updateShell(char * buff, int dim) {
