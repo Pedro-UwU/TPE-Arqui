@@ -116,7 +116,7 @@ void chess(){
         oldGame = 0;
         secondsV[0]=0;
         secondsV[1]=0;
-        secondsV[2]=readSeconds(); //lleva el tiempo eliminar si se  implementa timer tic
+        secondsV[2]=readSeconds();
         turn =1;
         rotate = 0;
         for (int i =0;i<2;i++){
@@ -130,15 +130,16 @@ void chess(){
             }
         }
         int newboard[SQUARES][SQUARES] = {
-            {0,2,2,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0},
-            {0,-1,0,1,0,0,0,0},
-            {0,0,0,0,0,0,0,0},
-            {0,2,2,2,0,0,0,0},
+            {ROOK,KNIGHT,BISHOP,QUEEN,KING,BISHOP,KNIGHT,ROOK},
+            {PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN,PAWN},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {-PAWN,-PAWN,-PAWN,-PAWN,-PAWN,-PAWN,-PAWN,-PAWN},
+            {-ROOK,-KNIGHT,-BISHOP,-QUEEN,-KING,-BISHOP,-KNIGHT,-ROOK}
         };
+
         for (int i = 0; i < SQUARES; i++){
             for (int j = 0; j < SQUARES; j++){
                 board[i][j] = newboard[i][j];
@@ -147,8 +148,6 @@ void chess(){
     } else if (play == 2){
         return ;
     }
-    
-    drawGame();
     console();
 }
 
@@ -389,23 +388,27 @@ static int validMovement(int xi,int yi,int xf, int yf,int perPlayer){
 static void internTimer(){
     if (secondsV[2]!=readSeconds()){
         secondsV[(turn)%2]++;
-        char toPrintTimer1[5];
-        toPrintTimer1[0] = secondsV[(turn)%2]/60/10%10+'0';
-        toPrintTimer1[1] = secondsV[(turn)%2]/60%10+'0';
-        toPrintTimer1[2] = ':';
-        toPrintTimer1[3] = secondsV[(turn)%2]%60/10%10+'0';
-        toPrintTimer1[4] = secondsV[(turn)%2]%60%10+'0';
-        char toPrintTimer2[5];
-        toPrintTimer2[0] = secondsV[(turn+1)%2]/60/10%10+'0';
-        toPrintTimer2[1] = secondsV[(turn+1)%2]/60%10+'0';
-        toPrintTimer2[2] = ':';
-        toPrintTimer2[3] = secondsV[(turn+1)%2]%60/10%10+'0';
-        toPrintTimer2[4] = secondsV[(turn+1)%2]%60%10+'0';
+        char toPrintTimer1[8];
+        toPrintTimer1[0] = secondsV[(turn)%2]/3600%10+'0';
+        toPrintTimer1[1] = ':';
+        toPrintTimer1[2] = secondsV[(turn)%2]%3600/60/10%10+'0';
+        toPrintTimer1[3] = secondsV[(turn)%2]%3600/60%10+'0';
+        toPrintTimer1[4] = ':';
+        toPrintTimer1[5] = secondsV[(turn)%2]%60/10%10+'0';
+        toPrintTimer1[6] = secondsV[(turn)%2]%60%10+'0';
+        char toPrintTimer2[8];
+        toPrintTimer2[0] = secondsV[(turn+1)%2]/3600%10+'0';
+        toPrintTimer2[1] = ':';
+        toPrintTimer2[2] = secondsV[(turn+1)%2]%3600/60/10%10+'0';
+        toPrintTimer2[3] = secondsV[(turn+1)%2]%3600/60%10+'0';
+        toPrintTimer2[4] = ':';
+        toPrintTimer2[5] = secondsV[(turn+1)%2]%60/10%10+'0';
+        toPrintTimer2[6] = secondsV[(turn+1)%2]%60%10+'0';
         int movy = PLAYER_2_PLACE_Y+2*BASE_CHAR_HEIGHT;
-        drawRect(PLAYER_12_PLACE_X,movy+(turn%2)*BOARDDIM/2,5*2*BASE_CHAR_WIDTH,2*BASE_CHAR_HEIGHT,BACKGROUND);
-        drawString(PLAYER_12_PLACE_X,movy+(turn%2)*BOARDDIM/2,toPrintTimer1,5,WHITE,BLACK,2,1);
-        drawRect(PLAYER_12_PLACE_X,movy+((turn+1)%2)*BOARDDIM/2,5*2*BASE_CHAR_WIDTH,2*BASE_CHAR_HEIGHT,BACKGROUND);
-        drawString(PLAYER_12_PLACE_X,movy+((turn+1)%2)*BOARDDIM/2,toPrintTimer2,5,WHITE,BLACK,2,1);
+        drawRect(PLAYER_12_PLACE_X,movy+(turn%2)*BOARDDIM/2,7*2*BASE_CHAR_WIDTH,2*BASE_CHAR_HEIGHT,BACKGROUND);
+        drawString(PLAYER_12_PLACE_X,movy+(turn%2)*BOARDDIM/2,toPrintTimer1,7,WHITE,BLACK,2,1);
+        drawRect(PLAYER_12_PLACE_X,movy+((turn+1)%2)*BOARDDIM/2,7*2*BASE_CHAR_WIDTH,2*BASE_CHAR_HEIGHT,BACKGROUND);
+        drawString(PLAYER_12_PLACE_X,movy+((turn+1)%2)*BOARDDIM/2,toPrintTimer2,7,WHITE,BLACK,2,1);
         secondsV[2]=readSeconds();
     }
 }
@@ -503,18 +506,17 @@ static int reverse(int y){
 }
 
 static void console(){
-    reDrawChessConsole(buffer);
-    drawBoard();
+    drawGame();
     int movx = 7*BASE_CHAR_WIDTH+CONSOLE_LIMIT_X;
     int l=0;
     int validMove=0;
     int check=0;
     while (1){
         internTimer();
-        if (secondsV[1]-secondsV[0]>60 || secondsV[1]>3600){
+        if (secondsV[1]-secondsV[0]>60 || secondsV[1]>5400){
             endGame(2,1);
             break;
-        } else if (secondsV[0]-secondsV[1]>60 || secondsV[0]>3600){
+        } else if (secondsV[0]-secondsV[1]>60 || secondsV[0]>5400){
             endGame(1,1);
             break;
         }
@@ -527,8 +529,9 @@ static void console(){
         if (readKeyboard(buf, bufferLength)) {
             buf[0]= toUpper(buf[0]);
             drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,(9)*BASE_CHAR_HEIGHT,BLACK);
-            if (buf[0]=='X') {
+            if (buf[0]=='P') {
                 oldGame =1;
+                endGame(-1,0);
                 break;
             }
             if (buf[0]=='Q'){
@@ -691,7 +694,7 @@ static void endGame(int winner, int by){
             }
         }
     }
-    if (winner){
+    if (winner>0){
         char winnerC = (char)winner+'0';
         drawString(SCREEN_WIDTH/2-7*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2-2*BASE_CHAR_HEIGHT,"THE WINNER IS",14,BACKGROUND,BLACK,4,1);
         drawString(SCREEN_WIDTH/2-4*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4-2*BASE_CHAR_HEIGHT,"PLAYER :",9,BACKGROUND,BLACK,4,1);
@@ -707,7 +710,7 @@ static void endGame(int winner, int by){
         default:
             break;
         }
-    } else {
+    } else if (winner==0){
         drawString(SCREEN_WIDTH/2-2*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2-2*BASE_CHAR_HEIGHT,"DRAW",4,BACKGROUND,BLACK,4,1);
         switch (by)
         {
@@ -723,6 +726,10 @@ static void endGame(int winner, int by){
         default:
             break;
         }
+    } else {
+        clearScreen(0);
+        drawString(SCREEN_WIDTH/2-2*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2-2*BASE_CHAR_HEIGHT,"PAUSE",5,BACKGROUND,BLACK,4,1);
+        drawString(SCREEN_WIDTH/2-15*2*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*2-2*BASE_CHAR_HEIGHT,"TO RESUME THE GAME PRESS [ P ]",31,BACKGROUND,BLACK,2,1);
     }
     drawString(SCREEN_WIDTH/2-16*2*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*3-2*BASE_CHAR_HEIGHT,"TO SEE THE GAME LOG PRESS [ Q ]",32,BACKGROUND,BLACK,2,1);
     drawString(SCREEN_WIDTH/2-20*2*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*4-2*BASE_CHAR_HEIGHT,"TO SEE GO TO THE MAIN MENU PRESS [ M ]",39,BACKGROUND,BLACK,2,1);
@@ -736,13 +743,20 @@ static void endGame(int winner, int by){
         if (readKeyboard(buf, bufferLength)) {
             buf[0]=toUpper(buf[0]);
             if (buf[0]=='Q'){
-                drawFullConsole(1);
+                if (winner==-1){
+                    drawFullConsole(2);
+                } else {
+                    drawFullConsole(1);
+                }
                 return;
             } else if( buf[0]=='M'){
                 chess();
                 return;
             } else if (buf[0]=='X'){
                 return;
+            }
+            if (buf[0]=='P'){
+                console();
             }
             
         }
@@ -951,7 +965,7 @@ static void drawFullConsole(int end){
         }
     }
     if (end){
-    drawString(SCREEN_WIDTH/2-(14)*BASE_CHAR_WIDTH*3,PROMOTE_LOGS+3*BASE_CHAR_HEIGHT,"PRESS ANY KEY EXIT THE GAME",28,WHITE,BLACK,3,1);
+        drawString(SCREEN_WIDTH/2-(20)*BASE_CHAR_WIDTH*3,PROMOTE_LOGS+3*BASE_CHAR_HEIGHT,"PRESS ANY KEY TO GO BACK TO THE END MENU",41,WHITE,BLACK,3,1);
     }else {
        drawString(SCREEN_WIDTH/2-(37/2)*BASE_CHAR_WIDTH*3,PROMOTE_LOGS+3*BASE_CHAR_HEIGHT,"PRESS ANY KEY TO GO BACK TO THE GAME",37,WHITE,BLACK,3,1);
     }
@@ -962,11 +976,14 @@ static void drawFullConsole(int end){
             buf[i] = 0;
         }
         if (readKeyboard(buf, bufferLength)) {
-            if (!end){
-                drawGame();
-            }
-            return;
+            break;
         }
+    }
+    if (end==0 ){
+        drawGame();
+    }
+    else if (end==2){
+        endGame(-1,0);
     }
 }
 
@@ -980,7 +997,7 @@ static void drawHelp(){
     y+=BASE_CHAR_HEIGHT;
     drawString(x,y,"PRESS [ Q ] TO SEE THE COMPLETE LOG",36,WHITE,BLACK,1,1);
     y+=BASE_CHAR_HEIGHT;
-    drawString(x,y,"PRESS [ X ] TO PAUSE THE GAME AND EXIT",39,WHITE,BLACK,1,1);
+    drawString(x,y,"PRESS [ P ] TO PAUSE THE GAME",30,WHITE,BLACK,1,1);
     y+=BASE_CHAR_HEIGHT;
     drawString(x,y,"PRESS [ R ] TO ROTATE THE BOARD",32,WHITE,BLACK,1,1);
 }
