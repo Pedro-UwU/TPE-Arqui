@@ -5,7 +5,6 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <syscallsASM.h>
-#include <charLib.h>
 #include <stdlib.h>
 #include <stdGraphics.h>
 

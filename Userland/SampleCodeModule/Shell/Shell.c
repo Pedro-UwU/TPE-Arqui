@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include <chess.h>
 #include <timer.h>
-#include <charLib.h>
 
 static char lines[TOTAL_LINES][MAX_LINE_LENGTH];// = {0};
 static uint8_t lineCursor = 0;
