@@ -9,6 +9,7 @@ GLOBAL getMemSyscall
 GLOBAL drawMatrixSyscall
 GLOBAL setKeyPressedFunctionSyscall
 GLOBAL isMayusSyscall
+GLOBAL getTicksSyscall
 section .text
 
 
@@ -131,6 +132,17 @@ getMemSyscall:
   mov rbp, rsp
 
   mov rax, 10 ;ID get43BytesFromAddress
+  int 80h
+
+  mov rsp, rbp
+  pop rbp
+  ret
+
+getTicksSyscall:
+  push rbp
+  mov rbp, rsp
+
+  mov rax, 7 ;ID get43BytesFromAddress
   int 80h
 
   mov rsp, rbp

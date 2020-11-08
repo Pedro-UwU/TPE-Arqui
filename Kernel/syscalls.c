@@ -55,8 +55,9 @@ void syscallHandler(registerStruct * registers) {
     // rdi xi, rsi yi, rdx puntero a matriz, rcx width, r8 height , r9 size
       drawMatrix((uint64_t) registers->rdi,(uint64_t) registers->rsi,(uint64_t *) registers->rdx,(uint64_t) registers->rcx,(uint64_t) registers->r8,(uint64_t) registers->r9);
       break;
-
-
+    case 7:
+      * ((uint64_t *)registers->rdi) = getTicks();
+      break;
     //
     //case 1: writeSTR
     //case 2: getDate

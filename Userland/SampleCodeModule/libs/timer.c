@@ -15,7 +15,7 @@ int readMinutes(){
 }
 
 int readHours(){
-  int ans;
+  uint8_t ans;
   getTimeSyscall(2,&ans);
   ans = ((int)ans-3)%24;
   return (ans);
@@ -64,4 +64,10 @@ void formatTime(int secondsT,char *buffer){
     buffer[0]=aux[0];
     buffer[1]=aux[1];
   }
+}
+
+int secondsTic(){
+  uint64_t sec;
+  getTicksSyscall(&sec);
+  return sec;
 }

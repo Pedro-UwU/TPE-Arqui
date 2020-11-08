@@ -6,10 +6,11 @@
 #include <inforeg.h>
 #include <Shell.h>
 #include <stdint.h>
+#include <timer.h>
 
 void test(char ** args){
   putChar('\n');
-  print("Hola %x", 15);
+  print("ticks %d", secondsTic());
 }
 
 

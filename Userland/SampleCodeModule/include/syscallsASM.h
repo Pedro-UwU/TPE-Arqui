@@ -14,4 +14,5 @@ void drawMatrixSyscall(uint64_t x, uint64_t y, uint64_t *mat, uint64_t width, ui
 void setKeyPressedFunctionSyscall(void (*f)(uint8_t));
 void isMayusSyscall(uint64_t *);
 void getMemSyscall(uint64_t, uint64_t*);
+void getTicksSyscall(uint64_t *);
 #endif
