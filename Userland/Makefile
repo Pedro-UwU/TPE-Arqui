@@ -5,7 +5,6 @@ SAMPLE_DATA=0001-sampleDataModule.bin
 all: sampleCodeModule sampleDataModule
 
 sampleCodeModule:
-	echo "AAAAAAAAAAA"
 	cd SampleCodeModule; make
 
 
