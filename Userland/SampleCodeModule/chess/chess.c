@@ -87,7 +87,7 @@ static int xyPassant[3]={-1,-1,-1};
 static void loadColorsPieces(uint64_t pieceC[][PIECES_SIZE],int j);
 static void console();
 static void reDrawChessConsole(char buffer[][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2]);
-static void endGame();
+static void endGame(int winner, int by);
 static void drawBoard();
 static int playAgain();
 static void promotePiece(int x,int y);
@@ -105,12 +105,14 @@ static int detectCheckMate();
 static int validCastle(char *buf);
 static int drownedKing();
 static void drawGame();
-static void drawFullConsole();
+static void drawFullConsole(int end);
 static int fewPieces();
+static int noMoreMoves();
 
 void chess(){
     clearScreen(BACKGROUND);
-    if (playAgain()){
+    int play = playAgain();
+    if (play==1 ){
         oldGame = 0;
         secondsV[0]=0;
         secondsV[1]=0;
@@ -128,13 +130,13 @@ void chess(){
             }
         }
         int newboard[SQUARES][SQUARES] = {
+            {0,2,2,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,-1,0,1,0,0,0,0},
+            {0,0,0,0,0,0,0,0},
+            {0,2,2,2,0,0,0,0},
             {0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0},
-            {0,0,1,0,-1,0,0,0},
-            {0,0,0,0,0,0,0,0},
-            {0,0,0,0,2,0,0,0},
             {0,0,0,0,0,0,0,0},
         };
         for (int i = 0; i < SQUARES; i++){
@@ -142,6 +144,8 @@ void chess(){
                 board[i][j] = newboard[i][j];
             }
         }
+    } else if (play == 2){
+        return ;
     }
     
     drawGame();
@@ -160,6 +164,7 @@ static int playAgain(){
         drawString(SCREEN_WIDTH/2-3*BASE_CHAR_WIDTH*6,CONSOLE_LIMIT_Y+BASE_CHAR_HEIGHT*3*2*2,"1- CONTINUE",12,WHITE,BLACK,3,1);
     }
     drawString(SCREEN_WIDTH/2-3*BASE_CHAR_WIDTH*6,CONSOLE_LIMIT_Y+BASE_CHAR_HEIGHT*3*2*3,"2- NEW GAME",12,WHITE,BLACK,3,1);
+    drawString(SCREEN_WIDTH/2-3*BASE_CHAR_WIDTH*4,CONSOLE_LIMIT_Y+BASE_CHAR_HEIGHT*3*2*4,"3- EXIT",8,WHITE,BLACK,3,1);
     char buf[1];
     buf[0] = 0;
     int ans=0;
@@ -171,7 +176,10 @@ static int playAgain(){
             } else if(buf[0]=='2'){
                 ans=1;
                 break;
-            }   
+            }  else if (buf[0]=='3'){
+                ans=2;
+                break;
+            }
         }
     }
     return ans;
@@ -185,7 +193,7 @@ static void drawBoard(){
     uint64_t colorPieces[PIECES_SIZE][PIECES_SIZE];
     for (int i = 0; i < SQUARES; movy+=SQUAREDIM, movx= x ,i++){
         for (int j = 0; j < SQUARES; movx+=SQUAREDIM,j++){
-                if ((j+i)%2){
+                if ((j+i+1)%2){
                     drawRect(movx,movy,SQUAREDIM,SQUAREDIM,SILVER);
                 } else {
                     drawRect(movx,movy,SQUAREDIM,SQUAREDIM,DARK_GRAY);
@@ -504,10 +512,10 @@ static void console(){
     while (1){
         internTimer();
         if (secondsV[1]-secondsV[0]>60 || secondsV[1]>3600){
-            endGame(2);
+            endGame(2,1);
             break;
         } else if (secondsV[0]-secondsV[1]>60 || secondsV[0]>3600){
-            endGame(1);
+            endGame(1,1);
             break;
         }
         
@@ -524,7 +532,7 @@ static void console(){
                 break;
             }
             if (buf[0]=='Q'){
-                drawFullConsole();
+                drawFullConsole(0);
                 reDrawChessConsole(buffer);
                 continue;
             }
@@ -580,7 +588,7 @@ static void console(){
                             drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yf][xf])-1])+6)*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(aux)-1],strlen(figures[fabs(aux)-1]),WHITE,BLACK,1,0);
                         }
                         if (fabs(aux)==KING) {
-                            endGame((turn+1)%2+1);
+                            endGame((turn+1)%2+1,2);
                             break;
                         }
                         drawBoard();
@@ -588,7 +596,7 @@ static void console(){
                             promotePiece(xf,yf);
                             drawBoard();
                         }
-                        turn=(turn+1)%TOTAL_LINES_CHESS;
+                        turn=(turn+1);
                         reDrawChessConsole(buffer);
                     }
                 } else if (validCastle(buffer[turn])){
@@ -614,17 +622,21 @@ static void console(){
                 drawString(movx+l*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,buf,1,WHITE,BLACK,1,0);
                 buffer[turn][l++] = buf[0];
             }
+            if (noMoreMoves()){
+                endGame(0,3);
+                break;
+            }
             if  (detectCheckMate()) {
-                endGame((detectCheck()-1)?1:2);
+                endGame((detectCheck()-1)?1:2,2);
                 break;
             }
             if (fewPieces()){
-                endGame(0);
+                endGame(0,2);
                 break;
             }
             int drowned = drownedKing();
             if (drowned){
-                endGame(0);
+                endGame(0,1);
                 break;
             }
             check =detectCheck();
@@ -668,7 +680,7 @@ static void promotePiece(int x,int y){
     drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,10*BASE_CHAR_HEIGHT,BLACK);
 }
 
-static void endGame(int winner){
+static void endGame(int winner, int by){
     int movx=0,movy=0;
     for (int i = 0; i < SCREEN_HEIGHT/SQUAREDIM; movy+=SQUAREDIM, movx= 0 ,i++){
         for (int j = 0; j < SCREEN_WIDTH/SQUAREDIM; movx+=SQUAREDIM,j++){
@@ -684,10 +696,37 @@ static void endGame(int winner){
         drawString(SCREEN_WIDTH/2-7*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2-2*BASE_CHAR_HEIGHT,"THE WINNER IS",14,BACKGROUND,BLACK,4,1);
         drawString(SCREEN_WIDTH/2-4*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4-2*BASE_CHAR_HEIGHT,"PLAYER :",9,BACKGROUND,BLACK,4,1);
         drawString(SCREEN_WIDTH/2-4*4*BASE_CHAR_WIDTH+BASE_CHAR_WIDTH*4*9,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4-2*BASE_CHAR_HEIGHT,&winnerC,1,BACKGROUND,BLACK,4,1);
-        drawString(SCREEN_WIDTH/2-11*3*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*3-2*BASE_CHAR_HEIGHT,"PRESS ANY KEY TO EXIT",22,BACKGROUND,BLACK,3,1);
+        switch (by)
+        {
+        case 1:
+            drawString(SCREEN_WIDTH/2-4*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2-4*3*BASE_CHAR_HEIGHT,"TIMEOUT",8,BACKGROUND,BLACK,4,1);
+            break;
+        case 2:
+            drawString(SCREEN_WIDTH/2-5*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2-4*3*BASE_CHAR_HEIGHT,"CHECK MATE",11,BACKGROUND,BLACK,4,1);
+            break;
+        default:
+            break;
+        }
     } else {
         drawString(SCREEN_WIDTH/2-2*4*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2-2*BASE_CHAR_HEIGHT,"DRAW",4,BACKGROUND,BLACK,4,1);
+        switch (by)
+        {
+        case 1:
+            drawString(SCREEN_WIDTH/2-5*3*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*2-2*BASE_CHAR_HEIGHT,"STALEMATE",10,BACKGROUND,BLACK,3,1);
+            break;
+        case 2:
+            drawString(SCREEN_WIDTH/2-11*3*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*2-2*BASE_CHAR_HEIGHT,"INSUFFICIENT MATERIAL",22,BACKGROUND,BLACK,3,1);
+            break;
+        case 3:
+            drawString(SCREEN_WIDTH/2-14*3*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*2-2*BASE_CHAR_HEIGHT,"TOP AMOUNT OF MOVES REACHED",28,BACKGROUND,BLACK,3,1);
+            break;
+        default:
+            break;
+        }
     }
+    drawString(SCREEN_WIDTH/2-16*2*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*3-2*BASE_CHAR_HEIGHT,"TO SEE THE GAME LOG PRESS [ Q ]",32,BACKGROUND,BLACK,2,1);
+    drawString(SCREEN_WIDTH/2-20*2*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*4-2*BASE_CHAR_HEIGHT,"TO SEE GO TO THE MAIN MENU PRESS [ M ]",39,BACKGROUND,BLACK,2,1);
+    drawString(SCREEN_WIDTH/2-12*2*BASE_CHAR_WIDTH,SCREEN_HEIGHT/2+BASE_CHAR_HEIGHT*4*5-2*BASE_CHAR_HEIGHT,"PRESS [ X ] KEY TO EXIT",24,BACKGROUND,BLACK,2,1);
     while(1){
         uint8_t bufferLength = 1;
         char buf[bufferLength];
@@ -695,7 +734,17 @@ static void endGame(int winner){
             buf[i] = 0;
         }
         if (readKeyboard(buf, bufferLength)) {
-            break;
+            buf[0]=toUpper(buf[0]);
+            if (buf[0]=='Q'){
+                drawFullConsole(1);
+                return;
+            } else if( buf[0]=='M'){
+                chess();
+                return;
+            } else if (buf[0]=='X'){
+                return;
+            }
+            
         }
     }
 }
@@ -805,6 +854,13 @@ static int fewPieces(){
     return 0;
 }
 
+static int noMoreMoves(){
+    if (turn >= TOTAL_LINES_CHESS){
+        return 1;
+    }
+    return 0;
+}
+
 static int drownedKing(){
     int team = detectCheck();
     int saveBoard[SQUARES][SQUARES] ={{0}};
@@ -883,7 +939,7 @@ static void reDrawChessConsole(char buffer[][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2]){
     }
 }
 
-static void drawFullConsole(){
+static void drawFullConsole(int end){
     clearScreen(0x80000);
     int x =PLAYER_12_PLACE_X,y=64;
     for (int i= turn,j=0; j < turn;i--,j++){
@@ -894,7 +950,11 @@ static void drawFullConsole(){
             y=SQUAREDIM;
         }
     }
-    drawString(SCREEN_WIDTH/2-(37/2)*BASE_CHAR_WIDTH*3,PROMOTE_LOGS+3*BASE_CHAR_HEIGHT,"PRESS ANY KEY TO GO BACK TO THE GAME",37,WHITE,BLACK,3,1);
+    if (end){
+    drawString(SCREEN_WIDTH/2-(14)*BASE_CHAR_WIDTH*3,PROMOTE_LOGS+3*BASE_CHAR_HEIGHT,"PRESS ANY KEY EXIT THE GAME",28,WHITE,BLACK,3,1);
+    }else {
+       drawString(SCREEN_WIDTH/2-(37/2)*BASE_CHAR_WIDTH*3,PROMOTE_LOGS+3*BASE_CHAR_HEIGHT,"PRESS ANY KEY TO GO BACK TO THE GAME",37,WHITE,BLACK,3,1);
+    }
     while(1){
         uint8_t bufferLength = 1;
         char buf[bufferLength];
@@ -902,8 +962,10 @@ static void drawFullConsole(){
             buf[i] = 0;
         }
         if (readKeyboard(buf, bufferLength)) {
-            drawGame();
-            break;
+            if (!end){
+                drawGame();
+            }
+            return;
         }
     }
 }
