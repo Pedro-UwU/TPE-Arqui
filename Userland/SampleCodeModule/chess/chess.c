@@ -104,6 +104,8 @@ static int detectCheck();
 static int detectCheckMate();
 static int validCastle(char *buf);
 static int drownedKing();
+static void drawGame();
+static void drawFullConsole();
 
 void chess(){
     clearScreen(BACKGROUND);
@@ -140,10 +142,8 @@ void chess(){
             }
         }
     }
-    clearScreen(BACKGROUND);
-    drawString(PLAYER_12_PLACE_X,PLAYER_1_PLACE_Y,"Player 1",strlen("player 1"),WHITE,BLACK,2,1);
-    drawString(PLAYER_12_PLACE_X,PLAYER_2_PLACE_Y,"Player 2",strlen("player 2"),WHITE,BLACK,2,1);
     
+    drawGame();
     console();
 }
 
@@ -529,6 +529,9 @@ static void console(){
                 break;
             }
             if (buf[0]=='`'){
+                drawFullConsole();
+            }
+            if (buf[0]=='r'){
                 turnBoard();
                 drawBoard();
             } else if (buf[0]=='\n' || l > MAX_LENGTH){
@@ -656,7 +659,7 @@ static void promotePiece(int x,int y){
             }
         }
     }
-    drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,42*BASE_CHAR_WIDTH,(PIECES_AMOUNT-1)*BASE_CHAR_HEIGHT,BACKGROUND);
+    drawRect(CONSOLE_LIMIT_X,PROMOTE_LOGS,CONSOLE_SIZE_X,10*BASE_CHAR_HEIGHT,BLACK);
 }
 
 static void endGame(int winner){
@@ -838,13 +841,41 @@ static void reDrawChessConsole(char buffer[][CONSOLE_SIZE_X/BASE_CHAR_WIDTH-2]){
     drawRect(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y,CONSOLE_SIZE_X,CONSOLE_SIZE_Y,BLACK);
     drawString(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,"P  |> ",7,WHITE,BLACK,1,0);
     drawString(CONSOLE_LIMIT_X+BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,player,1,WHITE,BLACK,1,0);
-    for (int i = turn; y>CONSOLE_LIMIT_Y; i--){
-        drawString(x,y,buffer[i%TOTAL_LINES_CHESS],CONSOLE_SIZE_X/BASE_CHAR_WIDTH,WHITE,BLACK,1,1);
+    for (int i = turn,j=0; j<TOTAL_LINES_CHESS/10; i--,j++){
+        drawString(x,y,buffer[i%TOTAL_LINES_CHESS],MAX_LENGTH,WHITE,BLACK,1,1);
         y-=BASE_CHAR_HEIGHT;
     }
 }
 
 static void drawFullConsole(){
     clearScreen(0x80000);
-    int x = 0,y=0;
+    int x =PLAYER_12_PLACE_X,y=64;
+    for (int i= turn,j=0; j < turn;i--,j++){
+        drawString(x,y,buffer[i%TOTAL_LINES_CHESS],MAX_LENGTH,WHITE,BLACK,1,1);
+        y+=BASE_CHAR_HEIGHT;
+        if ( ((j+1)%30)==0) {
+            x+=CONSOLE_SIZE_X;
+            y=SQUAREDIM;
+        }
+    }
+    drawString(SCREEN_WIDTH/2-(37/2)*BASE_CHAR_WIDTH*3,PROMOTE_LOGS+3*BASE_CHAR_HEIGHT,"PRESS ANY KEY TO GO BACK TO THE GAME",37,WHITE,BLACK,3,1);
+    while(1){
+        uint8_t bufferLength = 1;
+        char buf[bufferLength];
+        for (int i = 0; i < bufferLength; i++){
+            buf[i] = 0;
+        }
+        if (readKeyboard(buf, bufferLength)) {
+            drawGame();
+            break;
+        }
+    }
+}
+
+static void drawGame(){
+    clearScreen(BACKGROUND);
+    drawString(PLAYER_12_PLACE_X,PLAYER_1_PLACE_Y,"Player 1",strlen("player 1"),WHITE,BLACK,2,1);
+    drawString(PLAYER_12_PLACE_X,PLAYER_2_PLACE_Y,"Player 2",strlen("player 2"),WHITE,BLACK,2,1);
+    reDrawChessConsole(buffer[turn]);
+    drawBoard();
 }
