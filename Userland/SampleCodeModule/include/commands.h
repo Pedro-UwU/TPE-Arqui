@@ -7,5 +7,6 @@ void test(char args[MAX_ARGS][MAX_ARG_LEN]);
 void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]);
 void time(char args[MAX_ARGS][MAX_ARG_LEN]);
 void printmem(char args[MAX_ARGS][MAX_ARG_LEN]);
+void divZero(char args[MAX_ARGS][MAX_ARG_LEN]);
 
 #endif

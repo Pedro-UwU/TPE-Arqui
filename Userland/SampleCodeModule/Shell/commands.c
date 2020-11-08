@@ -7,6 +7,7 @@
 #include <Shell.h>
 #include <stdint.h>
 #include <syscallsASM.h>
+#include <forcedExceptions.h>
 
 void test(char args[MAX_ARGS][MAX_ARG_LEN]){
   putChar('\n');
@@ -57,4 +58,9 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
 void time(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
   print("%d:%d:%d %d/%d/%d", readHours(), readMinutes(), readSeconds(), readDays(), readMonths(), readYear());
+}
+
+void divZero(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  forceDivZero();
+  print("SE DIVIDIO\n");
 }

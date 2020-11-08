@@ -5,8 +5,11 @@ GLOBAL picSlaveMask
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
 GLOBAL _irq80Handler
+GLOBAL _exc00Handler
+GLOBAL saveInitialConditions
 
 EXTERN irqDispatcher
+EXTERN exceptionDispatcher
 
 SECTION .text
 
@@ -66,15 +69,21 @@ SECTION .text
 
 
 
-; %macro exceptionHandler 1
-; 	pushState
-;
-; 	mov rdi, %1 ; pasaje de parametro
-; 	call exceptionDispatcher
-;
-; 	popState
-; 	iretq
-; %endmacro
+%macro exceptionHandler 1
+	pushState
+
+	mov rdi, %1 ; pasaje de parametro
+	mov rsi, rsp; le pasamos los registros
+	call exceptionDispatcher
+
+	mov rax, [initConditions]; El rsp
+	mov [rsp+18*8], rax
+	mov rax, [initConditions+1*8]; El rip
+	mov [rsp+15*8], rax
+
+	popState
+	iretq
+%endmacro
 
 _cli:
 	cli
@@ -95,6 +104,9 @@ _irq01Handler:
 _irq80Handler:
 	irqHandlerMaster 80
 
+_exc00Handler:
+	exceptionHandler 0
+
 picMasterMask:
 	 push rbp
     mov rbp, rsp
@@ -110,3 +122,13 @@ picSlaveMask:
     out	0A1h,al
     pop     rbp
     retn
+
+saveInitialConditions: ;Recibe por rdi el address del sampleCodeModule
+	mov rax, rsp
+	mov [initConditions], rax
+	mov rax, rdi
+	mov [initConditions + 1*8], rax
+	ret
+
+section .bss
+initConditions resb 16; Primeros 8 bits, el rsp. Segundos 8 bits, el rip

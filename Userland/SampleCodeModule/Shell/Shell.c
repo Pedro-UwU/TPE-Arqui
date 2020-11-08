@@ -28,9 +28,9 @@ static void exeCommand(char*);
 static int isCommand(char * name);
 void updateShell(char * buff, int dim);
 
-char commandsNames[][10]={"time","test","inforeg","chess","printmem"};
-void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {time,test,inforeg,chess,printmem};
-static int totalCommands = 6;
+char commandsNames[][10]={"time","test","inforeg","chess","printmem","divZero"};
+void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {time,test,inforeg,chess,printmem,divZero};
+static int totalCommands = 7;
 
 void init_shell() {
   setConsoleUpdateFunction(updateShell);
