@@ -281,15 +281,15 @@ static void loadColorsPieces(uint64_t pieceC[][PIECES_SIZE],int j){
 }
 
 static int kingValidMov(int xi,int yi,int xf, int yf){
-    if ( fabs(xi-xf) > 1 || fabs(yi-yf) >1 ) return 0;
+    if ( iabs(xi-xf) > 1 || iabs(yi-yf) >1 ) return 0;
     return 1;
 }
 
 static int bishopValidMov(int xi,int yi,int xf, int yf){
-    if (fabs(xi-xf)!=fabs(yi-yf) ) return 0;
-    int stepx= fabs(xf-xi)/(xf-xi);
-    int stepy= fabs(yf-yi)/(yf-yi);
-    for (int i = 0,w=yi+stepy,j=xi+stepx; i < fabs(xi-xf)-1; i++,j+=stepx,w+=stepy) {
+    if (iabs(xi-xf)!=iabs(yi-yf) ) return 0;
+    int stepx= iabs(xf-xi)/(xf-xi);
+    int stepy= iabs(yf-yi)/(yf-yi);
+    for (int i = 0,w=yi+stepy,j=xi+stepx; i < iabs(xi-xf)-1; i++,j+=stepx,w+=stepy) {
         if (board[w][j]!=0) return 0;
     }
     return 1;
@@ -316,20 +316,20 @@ static int rookValidMov(int xi,int yi,int xf, int yf){
 static int queenValidMov(int xi,int yi,int xf, int yf){
     if ((xi-xf)==0 || (yf-yi)==0 ){
         return rookValidMov(xi,yi,xf,yf);
-    }else if(fabs((xf-xi)/(yf-yi))==1){
+    }else if(iabs((xf-xi)/(yf-yi))==1){
         return bishopValidMov(xi,yi,xf,yf);
     }
     return 0;
 }
 
 static int knightValidMov(int xi,int yi,int xf, int yf){
-    if (fabs(xi-xf)*fabs(yi-yf)!=2) return 0;
+    if (iabs(xi-xf)*iabs(yi-yf)!=2) return 0;
     return 1;
 }
 
 static int pawnValidMov(int xi,int yi,int xf, int yf){
-    if (fabs(xi-xf)>1 || fabs(yi-yf)>2) return 0;
-    if (fabs(xi-xf)==1 && xyPassant[0]!=-1 && xyPassant[0]==xf && xyPassant[1]==yf){
+    if (iabs(xi-xf)>1 || iabs(yi-yf)>2) return 0;
+    if (iabs(xi-xf)==1 && xyPassant[0]!=-1 && xyPassant[0]==xf && xyPassant[1]==yf){
         return 1;
     }
     if (board[yf][xf]==0 && xi-xf!=0) return 0;
@@ -367,7 +367,7 @@ static int validMovement(int xi,int yi,int xf, int yf,int perPlayer){
     }
     if (board[yi][xi]==0) return 0; // no se puede ejecutar este movimiento
     if (board[yi][xi] * board[yf][xf] > 0) return 0;
-    switch (fabs(board[yi][xi]))
+    switch (iabs(board[yi][xi]))
     {
     case 1:
         return kingValidMov(xi,yi,xf,yf);
@@ -575,7 +575,7 @@ static void console(){
                         if (aux){
                             lastEat=turn;
                         }
-                        if(fabs(board[yf][xf])==KING){
+                        if(iabs(board[yf][xf])==KING){
                             castleMove[turn%2][0]=1;
                         }else if ((board[yf][xf])==ROOK){
                             if(xi==7){
@@ -591,11 +591,11 @@ static void console(){
                             }
                         }
                         if (aux){
-                            drawString(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(board[yf][xf])-1],strlen(figures[fabs(board[yf][xf])-1]),WHITE,BLACK,1,0);
-                            drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yf][xf])-1]))*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT," eats ",6,WHITE,BLACK,1,0);     
-                            drawString(CONSOLE_LIMIT_X+(strlen(figures[fabs(board[yf][xf])-1])+6)*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[fabs(aux)-1],strlen(figures[fabs(aux)-1]),WHITE,BLACK,1,0);
+                            drawString(CONSOLE_LIMIT_X,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[iabs(board[yf][xf])-1],strlen(figures[iabs(board[yf][xf])-1]),WHITE,BLACK,1,0);
+                            drawString(CONSOLE_LIMIT_X+(strlen(figures[iabs(board[yf][xf])-1]))*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT," eats ",6,WHITE,BLACK,1,0);     
+                            drawString(CONSOLE_LIMIT_X+(strlen(figures[iabs(board[yf][xf])-1])+6)*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y+8*BASE_CHAR_HEIGHT,figures[iabs(aux)-1],strlen(figures[iabs(aux)-1]),WHITE,BLACK,1,0);
                         }
-                        if (fabs(aux)==KING) {
+                        if (iabs(aux)==KING) {
                             endGame((turn+1)%2+1,2);
                             break;
                         }
@@ -630,7 +630,7 @@ static void console(){
                 drawString(movx+l*BASE_CHAR_WIDTH,CONSOLE_LIMIT_Y+CONSOLE_SIZE_Y-BASE_CHAR_HEIGHT,buf,1,WHITE,BLACK,1,0);
                 buffer[turn][l++] = buf[0];
             }
-            if (fabs(lastEat-turn)>=50){
+            if (iabs(lastEat-turn)>=50){
                 endGame(0,4);
                 break;
             }
@@ -871,7 +871,7 @@ static int fewPieces(){
     if (sum==3){
         for (int i =0 ;i<SQUARES;i++){
             for (int j =0 ;j <SQUARES;j++){
-                if (fabs(board[i][j])==KNIGHT || fabs(board[i][j])==BISHOP){
+                if (iabs(board[i][j])==KNIGHT || iabs(board[i][j])==BISHOP){
                     return 1;
                 }
             }

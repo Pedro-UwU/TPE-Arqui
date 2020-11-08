@@ -8,7 +8,7 @@ int intToString(unsigned long long num, char * buffer);
 int strlen(char *str);
 int strcmp(char * str1, char * str2);
 int intToBase(unsigned long long num, int base, char*buffer);
-int fabs(int num);
+int iabs(int num);
 
 int atoi(char * str){
   int aux = 0;
@@ -80,7 +80,7 @@ int intToBase(unsigned long long num, int base, char*buffer){
     return c;
 }
 
-int fabs(int num){
+int iabs(int num){
   if (num < 0){
    return -num;
   }
