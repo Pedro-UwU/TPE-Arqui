@@ -33,11 +33,6 @@ void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
   if (args[1][0] == '0' && args[1][1] == 'x') {
     with0x = 2;
   }
-
-  // for (int i = 0; args[i][0] != 0 && i < 10; i++) {
-  //   print("\n%s", args[i]);
-  // }
-
   uint64_t aux = atohex(&args[1][with0x]);
   if (aux >= 0) {
     for (int i = 0; i < 32; i++, aux++) {

@@ -288,13 +288,13 @@ static int kingValidMov(int xi,int yi,int xf, int yf){
 static int bishopValidMov(int xi,int yi,int xf, int yf){
     if (fabs(xi-xf)!=fabs(yi-yf) ) return 0;
     int stepx= fabs(xf-xi)/(xf-xi);
-    int stepy= fabs(yf-yi)/(yf-yi); //chequear
+    int stepy= fabs(yf-yi)/(yf-yi);
     for (int i = 0,w=yi+stepy,j=xi+stepx; i < fabs(xi-xf)-1; i++,j+=stepx,w+=stepy) {
         if (board[w][j]!=0) return 0;
     }
     return 1;
 }
-//arreglar
+
 static int rookValidMov(int xi,int yi,int xf, int yf){
     if ((xi-xf)*(yi-yf)!=0) return 0;
     if (xi-xf==0){
@@ -440,7 +440,7 @@ static int validCastle(char *buf){
                 }
             } // castlemove == 0 el rey no se movio
         } else {
-            if (castleMove[turn%2][0]==0 && castleMove[turn%2][1]==0){ //corregir
+            if (castleMove[turn%2][0]==0 && castleMove[turn%2][1]==0){
                 if (board[0][5]==0 && board[0][6]==0){
                     if (!coorCheck(5,0) && !coorCheck(6,0) && !coorCheck(4,0)){
                         board[0][6]=board[0][4];
