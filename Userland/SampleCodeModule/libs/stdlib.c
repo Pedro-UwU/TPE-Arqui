@@ -58,7 +58,7 @@ int strlen(char *str){
   int i =0;
   for ( i = 0; *(str+i); i++)
   {
-    
+
   }
   return i;
 }
@@ -72,6 +72,13 @@ int strcmp(char * str1, char * str2){
         i++;
     }
     return str1[i]-str2[i];
+}
+
+char * strcpy(char * dest, char * src) {
+  for (int i = 0; src[i] != 0; i++) {
+    dest[i] = src[i];
+  }
+  return dest;
 }
 
 #endif

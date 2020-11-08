@@ -56,10 +56,50 @@ void scan(char * buff) {
   putChar('\n');
 }
 
-void print(char * buff) {
-  for (int i = 0; buff[i] != 0; i++) {
-    putChar(buff[i]);
+void print(char * str, ...) {
+  // for (int i = 0; buff[i] != 0; i++) {
+  //   putChar(buff[i]);
+  // }
+  va_list vl;
+  va_start(vl, str);
+  char * auxPtr;
+  char buffer[128] = {0};
+  char tmp[20];
+  int i = 0, j = 0;
+  while (str && str[i]) {
+    if (str[i] == '%') {
+      i++;
+      switch(str[i]) {
+        case 'c':
+        buffer[j++] = (char)va_arg( vl, int );
+        break;
+        case 'd':
+        intToString(va_arg( vl, int ), tmp);
+        strcpy(&buffer[j], tmp);
+        j+=strlen(tmp);
+        break;
+        case 's':
+        auxPtr = va_arg(vl, char*);
+        strcpy(&buffer[j],auxPtr);
+        j+=strlen(auxPtr);
+        break;
+        case 'x':
+        intToBase(va_arg( vl, int ),16, tmp);
+        strcpy(&buffer[j], tmp);
+        j+=strlen(tmp);
+        break;
+        case 'X': //uint64_t hexa
+        intToBase(va_arg( vl, uint64_t ),16, tmp);
+        strcpy(&buffer[j], tmp);
+        j+=strlen(tmp);
+        break;
+      }
+    } else {
+      buffer[j++] = str[i];
+    }
+    i++;
   }
+  updateConsolePointer(buffer, j);
 }
 
 void putChar(char ch) {

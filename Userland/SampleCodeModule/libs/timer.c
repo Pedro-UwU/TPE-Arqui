@@ -15,9 +15,10 @@ int readMinutes(){
 }
 
 int readHours(){
-  uint8_t ans;
+  int ans;
   getTimeSyscall(2,&ans);
-  return ans-3;
+  ans = ((int)ans-3)%24;
+  return (ans);
 }
 
 int readDays(){

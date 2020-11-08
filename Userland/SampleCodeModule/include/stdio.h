@@ -14,6 +14,6 @@ int readKeyboard(char * buffer, int size);
 void setKeyPressedFunction(void (*)(uint8_t));
 void setConsoleUpdateFunction(void (*f)(char *, int));
 char getChar();
-void print(char * buff);
+void print(char *, ...);
 void putChar(char ch);
 #endif

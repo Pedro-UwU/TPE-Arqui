@@ -47,13 +47,7 @@ SECTION .text
 %endmacro
 
 %macro irqHandlerMaster 1
-
-	push $
-	push rsp
-	mov [rsp+8], rsp
-
 	pushState
-
 
   mov rsi, rsp ;puntero a los registros
 
@@ -67,11 +61,6 @@ SECTION .text
 	popState
 
 	;saco los dos push de antes de hacer un pushState
-	mov [regBackUp], rax
-	pop rax
-	pop rax
-	mov rax, [regBackUp]
-
 	iretq
 %endmacro
 
@@ -121,7 +110,3 @@ picSlaveMask:
     out	0A1h,al
     pop     rbp
     retn
-
-
-section .bss
-regBackUp resb 8

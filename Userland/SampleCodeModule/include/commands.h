@@ -4,5 +4,6 @@
 void test();
 void timer();
 void inforeg();
+void time();
 
 #endif

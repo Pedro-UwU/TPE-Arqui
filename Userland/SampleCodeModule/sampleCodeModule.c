@@ -18,7 +18,7 @@ int main() {
 
 	while (1) {
 		int ch = getChar();
-		print(&ch);
+		keyPressedShell(ch);
 
 	}
 

@@ -7,17 +7,35 @@
 #include <Shell.h>
 #include <stdint.h>
 
-void test(){
-  char buff[10] = {0};
-  scan(buff);
-  print(buff);
-  print("\n");
+void test(char ** args){
+  putChar('\n');
+  print("Hola %x", 15);
 }
 
-void inforeg(){
+
+void inforeg(char ** args){
   clearScreen(0);
-  uint64_t registers[17];
-  inforegs(registers);
+  uint64_t registers[19];
+  getRegisters(registers);
+  putChar('\n');
+  print("R15: %X - R14: %X\n", registers[18], registers[17]);
+  print("R13: %X - R12: %X\n", registers[16], registers[15]);
+  print("R11: %X - R10: %X\n", registers[14], registers[13]);
+  print("R9: %X - R8: %X\n", registers[12], registers[11]);
+  print("RSI: %X - RDI: %X\n", registers[10], registers[9]);
+  print("RBP: %X - RDX: %X\n", registers[8], registers[7]);
+  print("RCX: %X - RBX: %X\n", registers[6], registers[5]);
+  print("RAX: %X - RIP: %X\n", registers[4], registers[3]);
+  print("CS: %X - FLAGS: %X\n", registers[2], registers[1]);
+  print("RSP: %X\n", registers[0]);
+
+// void printmem(char ** args) {
+//
+// }
+
+
+
+
   int movey=0;
   for (int i = 0; i < 17; i++){
     char num[10];
@@ -26,6 +44,11 @@ void inforeg(){
     movey+=BASE_CHAR_HEIGHT;
   }
 
+}
+
+void time(char ** args) {
+  putChar('\n');
+  print("%d:%d:%d %d/%d/%d", readHours(), readMinutes(), readSeconds(), readDays(), readMonths(), readYear());
 }
 
 void timer(){
