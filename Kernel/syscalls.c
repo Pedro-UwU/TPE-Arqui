@@ -77,7 +77,7 @@ void syscallHandler(registerStruct * registers) {
     case 10:
     //rdi -> direccion de la que se desea leer
     //rsi -> direccion del buffer para guardar
-    get32bytesFromAddress(registers->rdi, (uint64_t*)registers->rsi, 4);
+    get32bytesFromAddress(registers->rdi, (uint64_t*)registers->rsi, 1);
     break;
 
     case 11:

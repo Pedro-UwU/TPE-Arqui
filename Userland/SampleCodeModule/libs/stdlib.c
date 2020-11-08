@@ -19,7 +19,32 @@ int atoi(char * str){
   return aux;
 }
 
+int atohex(char * str) {
+  int aux = 0;
+  while (*str!= 0) {
+    int value = 0;
+    if (*str >= '0' && *str <= '9') {
+      value = *str - '0';
+    } else if (*str >= 'A' && *str <= 'F') {
+      value = 10 + *str - 'A';
+    } else if (*str >= 'a' && *str <= 'f') {
+      value = 10 + *str - 'a';
+    } else {
+      return -1;
+    }
+    str++;
+    aux *= 16;
+    aux += value;
+  }
+  return aux;
+}
+
 int intToBase(unsigned long long num, int base, char*buffer){
+    if (num == 0) {
+      buffer[0] = '0';
+      buffer[1] = 0;
+      return 2;
+    }
     char stack[11];
     int c = 0;
     int i=0;

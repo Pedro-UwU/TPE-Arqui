@@ -34,9 +34,9 @@ static void exeCommand(char*);
 static int isCommand(char * name);
 void updateShell(char * buff, int dim);
 
-char commandsNames[5][10]={"time","test","inforeg","chess"};
-void  (* run[])(char*) = {time,test,inforeg,chess};
-static int totalCommands = 5;
+char commandsNames[][10]={"time","test","inforeg","chess","printmem"};
+void  (* run[])(char args[MAX_ARGS][MAX_ARG_LEN]) = {time,test,inforeg,chess,printmem};
+static int totalCommands = 6;
 void init_shell() {
   stdIn = getSTD_INAddress();
   stdOut = getSTD_OUTAddress();
@@ -121,7 +121,7 @@ static void clearScreenLine(uint8_t line){
 
 //ejecutaria los commands
 static void exeCommand(char * line){
-  char commandArgs[10][20] = {{0}}; //Maximo 10 argumentos de 20 caracteres c/u
+  char commandArgs[10][32] = {{0}}; //Maximo 10 argumentos de 32 caracteres c/u
   int foundArgs = 0;
   int index = 0;
   int nameIndex = 0;
@@ -135,9 +135,12 @@ static void exeCommand(char * line){
     }
     index++;
   }
+
     int i = isCommand(commandArgs[0]);
     if (i >= 0) {
       run[i](commandArgs);
+    } else {
+      print(" - INVALID COMMAND");
     }
 
 }
@@ -155,15 +158,8 @@ static int isCommand(char * name){
 
 void keyPressedShell(char ch) {
   if (ch) {
-    if (ch == '\n') {
-      int i = 1;
-      if (i>=0) {
-        exeCommand(lines[(currentLineNumber)%(TOTAL_LINES-1)]);
-        drawShellLines();
-      }
-      else{
-        print(" - INVALID COMMAND");
-      }
+    if (ch == '\n' && lineCursor > 0) {
+      exeCommand(lines[(currentLineNumber)%(TOTAL_LINES-1)]);
     }
     putChar(ch);
   }

@@ -84,6 +84,10 @@ void * initializeKernelBinary()
 
 int main()
 {
+	//para chequear el printmem
+	// uint64_t address = 0x123456;
+	// uint64_t * add = (uint64_t*)address;
+	// *add = 0xFFFFFFAA;
 	load_idt();
 	ncPrint("[Kernel Main]");
 	ncNewline();

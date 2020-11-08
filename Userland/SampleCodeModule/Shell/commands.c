@@ -6,14 +6,15 @@
 #include <inforeg.h>
 #include <Shell.h>
 #include <stdint.h>
+#include <syscallsASM.h>
 
-void test(char ** args){
+void test(char args[MAX_ARGS][MAX_ARG_LEN]){
   putChar('\n');
   print("Hola %x", 15);
 }
 
 
-void inforeg(char ** args){
+void inforeg(char args[MAX_ARGS][MAX_ARG_LEN]){
   clearScreen(0);
   uint64_t registers[19];
   getRegisters(registers);
@@ -28,61 +29,32 @@ void inforeg(char ** args){
   print("RAX: %X - RIP: %X\n", registers[4], registers[3]);
   print("CS: %X - FLAGS: %X\n", registers[2], registers[1]);
   print("RSP: %X\n", registers[0]);
+}
 
-// void printmem(char ** args) {
-//
-// }
-
-
-
-
-  int movey=0;
-  for (int i = 0; i < 17; i++){
-    char num[10];
-    int len = intToString(registers[i],num);
-    drawString(0,movey,num, len, 0xffffff,0,1,0);
-    movey+=BASE_CHAR_HEIGHT;
+void printmem(char args[MAX_ARGS][MAX_ARG_LEN]) {
+  putChar('\n');
+  int with0x = 0;
+  if (args[1][0] == '0' && args[1][1] == 'x') {
+    with0x = 2;
   }
 
+  // for (int i = 0; args[i][0] != 0 && i < 10; i++) {
+  //   print("\n%s", args[i]);
+  // }
+
+  uint64_t aux = atohex(&args[1][with0x]);
+  if (aux >= 0) {
+    for (int i = 0; i < 32; i++, aux++) {
+      uint64_t mem = 1;
+      getMemSyscall(aux, &mem);
+      print("-0x%x: %x\n",aux, mem);
+    }
+  } else {
+    print("INVALID ADDRESS\n");
+  }
 }
 
-void time(char ** args) {
+void time(char args[MAX_ARGS][MAX_ARG_LEN]) {
   putChar('\n');
   print("%d:%d:%d %d/%d/%d", readHours(), readMinutes(), readSeconds(), readDays(), readMonths(), readYear());
-}
-
-void timer(){
-    char num[10]={0};
-    int movex=SCREEN_WIDTH-BASE_CHAR_WIDTH*18;
-    int len = intToString(readDays(),num);
-    drawString(movex,0,num,len,0xffff00,0,1,0);
-    movex+=BASE_CHAR_WIDTH*2;
-    drawString(movex,0,"/",1,0xffff00,0,1,0);
-    movex+=BASE_CHAR_WIDTH;
-    len = intToString(readMonths(),num);
-    drawString(movex,0,num,len,0xffff00,0,1,0);
-    movex+=BASE_CHAR_WIDTH*2;
-    drawString(movex,0,"/",1,0xffff00,0,1,0);
-    movex+=BASE_CHAR_WIDTH;
-    len = intToString(readYear(),num);
-    drawString(movex,0,num,len,0xffff00,0,1,0);
-    movex+=BASE_CHAR_WIDTH*3;
-    drawString(movex,0," ",1,0xffff00,0,1,0);
-    len = intToString(readHours(),num);
-    drawString(movex,0,num,len,0xffff00,0,1,0);
-    movex+=BASE_CHAR_WIDTH*2;
-    drawString(movex,0,":",1,0xffff00,0,1,0);
-    len = intToString(readMinutes(),num);
-    movex+=BASE_CHAR_WIDTH;
-    drawString(movex,0,num,len,0xffff00,0,1,0);
-    movex+=BASE_CHAR_WIDTH*2;
-    drawString(movex,0,":",1,0xffff00,0,1,0);
-    int seconds = readSeconds();
-    len = intToString(seconds,num);
-    movex+=BASE_CHAR_WIDTH;
-    if (seconds<10){
-      drawString(movex,0,"0",len,0xffff00,0,1,0);
-      movex+=BASE_CHAR_WIDTH;
-    }
-    drawString(movex,0,num,len,0xffff00,0,1,0);
 }

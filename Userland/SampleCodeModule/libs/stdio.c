@@ -57,9 +57,6 @@ void scan(char * buff) {
 }
 
 void print(char * str, ...) {
-  // for (int i = 0; buff[i] != 0; i++) {
-  //   putChar(buff[i]);
-  // }
   va_list vl;
   va_start(vl, str);
   char * auxPtr;
@@ -88,7 +85,7 @@ void print(char * str, ...) {
         strcpy(&buffer[j], tmp);
         j+=strlen(tmp);
         break;
-        case 'X': //uint64_t hexa
+        case 'X': //long hexa
         intToBase(va_arg( vl, uint64_t ),16, tmp);
         strcpy(&buffer[j], tmp);
         j+=strlen(tmp);
