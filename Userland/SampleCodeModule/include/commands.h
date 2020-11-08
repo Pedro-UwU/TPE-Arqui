@@ -5,5 +5,5 @@ void test();
 void timer();
 void inforeg();
 void time();
-
+void help(char **);
 #endif

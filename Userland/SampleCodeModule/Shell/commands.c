@@ -13,7 +13,17 @@ void test(char ** args){
   print("ticks %d", secondsTic());
 }
 
-
+void help(char **args){
+   print(
+        "\navailable commands: \n"
+        "    help \n"
+        "    inforeg \n"
+        "    printmem \n"
+        "    divZero \n"
+        "    localtime \n"
+        "    chess "
+    );
+}
 void inforeg(char ** args){
   clearScreen(0);
   uint64_t registers[19];

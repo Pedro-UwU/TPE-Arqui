@@ -34,8 +34,8 @@ static void exeCommand(char*);
 static int isCommand(char * name);
 void updateShell(char * buff, int dim);
 
-char commandsNames[5][10]={"time","test","inforeg","chess"};
-void  (* run[])(char*) = {time,test,inforeg,chess};
+char commandsNames[5][10]={"time","test","inforeg","chess","help"};
+void  (* run[])(char*) = {time,test,inforeg,chess,help};
 static int totalCommands = 5;
 void init_shell() {
   stdIn = getSTD_INAddress();
