@@ -38,6 +38,19 @@ int atohex(char * str) {
   }
   return aux;
 }
+char toLower(char letter){
+  if (letter<='Z' && letter>='A'){
+    return letter+'a'-'A';
+  }
+  return letter;
+}
+
+char toUpper(char letter){
+  if (letter<='z' && letter>='a'){
+    return letter+'A'-'a';
+  }
+  return letter;
+}
 
 int intToBase(unsigned long long num, int base, char*buffer){
     if (num == 0) {
